@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="description" content="Cabañas La Delfina - Alquiler de cabañas en Oliveros, Santa Fe. Conexión con la naturaleza, río, arboleda, pileta. Escapadas de fin de semana, feriados largos y vacaciones. Abierto todo el año.">
+    <meta name="keywords" content="cabañas Oliveros, alquiler cabañas Santa Fe, cabañas río, turismo Oliveros, escapadas fin de semana, vacaciones Santa Fe">
+    <meta name="author" content="Cabañas La Delfina">
+    <title>Cabañas La Delfina - Alquiler de Cabañas en Oliveros, Santa Fe</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>Cabañas La Delfina</h1>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#inicio" class="nav-link">Inicio</a></li>
+                <li><a href="#cabanas" class="nav-link">Cabañas</a></li>
+                <li><a href="#servicios" class="nav-link">Servicios</a></li>
+                <li><a href="#tarifas" class="nav-link">Tarifas</a></li>
+                <li><a href="#testimonios" class="nav-link">Testimonios</a></li>
+                <li><a href="#ubicacion" class="nav-link">Ubicación</a></li>
+                <li><a href="#contacto" class="nav-link">Contacto</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <div class="hero-carousel">
+            <div class="hero-slide active" style="background-image: url('images/galeria-1.png');"></div>
+            <div class="hero-slide" style="background-image: url('images/galeria-2.png');"></div>
+            <div class="hero-slide" style="background-image: url('images/galeria-3.png');"></div>
+            <div class="hero-slide" style="background-image: url('images/galeria-4.png');"></div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">Cabañas La Delfina</h1>
+            <p class="hero-subtitle">El lugar ideal para tu descanso</p>
+            <p class="hero-description">En familia, en pareja o con amigos</p>
+            <p class="hero-info">Abierto todo el Año. Escapadas de Fin de semana, Feriados Largos, Vacaciones de Verano/Invierno</p>
+            <a href="#contacto" class="btn btn-primary">Reservar Ahora</a>
+            <div class="hero-social-share">
+                <span>Compartir:</span>
+                <a href="#" class="social-share-btn" data-platform="facebook" aria-label="Compartir en Facebook">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                </a>
+                <a href="#" class="social-share-btn" data-platform="twitter" aria-label="Compartir en Twitter">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                    </svg>
+                </a>
+                <a href="#" class="social-share-btn" data-platform="whatsapp" aria-label="Compartir en WhatsApp">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <span>Descubre más</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </div>
+        <div class="hero-dots">
+            <span class="hero-dot active" data-slide="0"></span>
+            <span class="hero-dot" data-slide="1"></span>
+            <span class="hero-dot" data-slide="2"></span>
+            <span class="hero-dot" data-slide="3"></span>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Armonía Campestre</h2>
+                <p class="section-subtitle">Te invitamos al relax, la prisa queda atrás...</p>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>En Cabañas La Delfina encontrarás la conexión perfecta con la naturaleza. Rodeadas de arboleda, con <strong>bajada exclusiva al río</strong>, pileta y espacios verdes, nuestras cabañas ofrecen el ambiente ideal para meditación, silencio y paz.</p>
+                    <p>Diseñadas para parejas y familias que buscan desconectarse del ritmo urbano y reconectarse con lo esencial. Disfruta de un asadito al aire libre mientras contemplas el paisaje natural que nos rodea y aprovechas el acceso directo al río.</p>
+                </div>
+                <div class="about-gallery">
+                    <div class="gallery-item" data-gallery-index="0">
+                        <img src="images/galeria-1.png" alt="Vista del entorno natural - La Delfina Cabañas" loading="lazy">
+                    </div>
+                    <div class="gallery-item" data-gallery-index="1">
+                        <img src="images/galeria-2.png" alt="Espacios verdes y naturaleza - La Delfina Cabañas" loading="lazy">
+                    </div>
+                    <div class="gallery-item" data-gallery-index="2">
+                        <img src="images/galeria-3.png" alt="Pileta y áreas comunes - La Delfina Cabañas" loading="lazy">
+                    </div>
+                    <div class="gallery-item" data-gallery-index="3">
+                        <img src="images/galeria-4.png" alt="Vista del río - La Delfina Cabañas" loading="lazy">
+                    </div>
+                    <div class="gallery-item" data-gallery-index="4">
+                        <img src="images/galeria-5.png" alt="Interior de cabaña - La Delfina Cabañas" loading="lazy">
+                    </div>
+                    <div class="gallery-item" data-gallery-index="5">
+                        <img src="images/galeria-6.png" alt="Deck y espacios exteriores - La Delfina Cabañas" loading="lazy">
+                    </div>
+                    <div class="gallery-item" data-gallery-index="6">
+                        <img src="images/galeria-7.png" alt="Cocina equipada - La Delfina Cabañas" loading="lazy">
+                    </div>
+                    <div class="gallery-item" data-gallery-index="7">
+                        <img src="images/galeria-8.png" alt="Dormitorio - La Delfina Cabañas" loading="lazy">
+                    </div>
+                </div>
+
+                <!-- Modal para Galería -->
+                <div id="galleryModal" class="gallery-modal">
+                    <span class="gallery-close">&times;</span>
+                    <span class="gallery-prev">&#10094;</span>
+                    <span class="gallery-next">&#10095;</span>
+                    <div class="gallery-modal-content">
+                        <img id="galleryModalImage" src="" alt="">
+                        <div class="gallery-counter">
+                            <span id="galleryCurrent">1</span> / <span id="galleryTotal">8</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cabañas Section -->
+    <section id="cabanas" class="cabanas">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Nuestras Cabañas</h2>
+                <p class="section-subtitle">7 Cabañas totalmente equipadas para tu comodidad</p>
+            </div>
+
+            <!-- Cabaña de Un Dormitorio -->
+            <div class="cabana-card">
+                <div class="cabana-image">
+                    <img src="images/cabana-un-dormitorio.png" alt="Cabaña de Un Dormitorio - La Delfina Cabañas" loading="lazy">
+                </div>
+                <div class="cabana-content">
+                    <h3 class="cabana-title">Cabaña de Un Dormitorio</h3>
+                    <p class="cabana-capacity">Hasta 4 personas</p>
+                    <div class="cabana-details">
+                        <h4>Planta Baja:</h4>
+                        <ul>
+                            <li>Cocina comedor (vajilla completa, cocina con horno, heladera con freezer, microondas)</li>
+                            <li>Living con sofá</li>
+                            <li>TV LED 32" con Cable</li>
+                            <li>Wi-Fi</li>
+                            <li>Aire acondicionado F/C, ventilador</li>
+                            <li>Baño con ducha, secador de cabello</li>
+                            <li>Deck con vista a la pileta y al río, pérgola con mesa y parrilla</li>
+                            <li>Cochera para un vehículo</li>
+                        </ul>
+                        <h4>Planta Alta:</h4>
+                        <ul>
+                            <li>Dormitorio con balcón al río</li>
+                            <li>Aire Acondicionado F/C</li>
+                            <li>TV LED 24"</li>
+                        </ul>
+                    </div>
+                    <a href="#contacto" class="btn btn-secondary">Consultar Disponibilidad</a>
+                </div>
+            </div>
+
+            <!-- Cabaña de Dos Dormitorios -->
+            <div class="cabana-card">
+                <div class="cabana-image">
+                    <img src="images/cabana-dos-dormitorios.png" alt="Cabaña de Dos Dormitorios - La Delfina Cabañas" loading="lazy">
+                </div>
+                <div class="cabana-content">
+                    <h3 class="cabana-title">Cabaña de Dos Dormitorios</h3>
+                    <p class="cabana-capacity">Hasta 5 personas</p>
+                    <div class="cabana-details">
+                        <h4>Planta Baja:</h4>
+                        <ul>
+                            <li>Cocina comedor (vajilla completa, cocina con horno, heladera con freezer, microondas)</li>
+                            <li>Living con sofá 3 cuerpos</li>
+                            <li>TV LED 32" con Cable</li>
+                            <li>Wi-Fi</li>
+                            <li>Aire acondicionado F/C, ventilador</li>
+                            <li>Baño con ducha, secador de cabello</li>
+                            <li>Deck con vista a la pileta y al río, pérgola con mesa y parrilla</li>
+                            <li>Cochera para un vehículo</li>
+                        </ul>
+                        <h4>Planta Alta:</h4>
+                        <ul>
+                            <li>Dormitorio con balcón al río, Aire Acondicionado F/C, TV LED 24"</li>
+                            <li>Dormitorio con camas individuales, Aire Acondicionado F/C, ventilador</li>
+                        </ul>
+                    </div>
+                    <a href="#contacto" class="btn btn-secondary">Consultar Disponibilidad</a>
+                </div>
+            </div>
+
+            <!-- Loft de Dos Dormitorios -->
+            <div class="cabana-card">
+                <div class="cabana-image">
+                    <img src="images/loft.png" alt="Loft de Dos Dormitorios - La Delfina Cabañas" loading="lazy">
+                </div>
+                <div class="cabana-content">
+                    <h3 class="cabana-title">Loft de Dos Dormitorios</h3>
+                    <p class="cabana-capacity">Hasta 5 personas</p>
+                    <div class="cabana-details">
+                        <h4>Características:</h4>
+                        <ul>
+                            <li>Monoambiente con diseño moderno</li>
+                            <li>Cocina comedor (vajilla completa, cocina con horno, heladera con freezer, microondas)</li>
+                            <li>TV Smart 32" con Cable, plataforma virtual con películas y series</li>
+                            <li>Wi-Fi</li>
+                            <li>Dormitorio matrimonial</li>
+                            <li>Aire acondicionado F/C, ventilador</li>
+                            <li>Baño con ducha, secador de cabello</li>
+                            <li>Deck con mesa y sillas, vista al río y pileta, reposeras</li>
+                        </ul>
+                    </div>
+                    <a href="#contacto" class="btn btn-secondary">Consultar Disponibilidad</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Servicios Section -->
+    <section id="servicios" class="servicios">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Nuestros Alojamientos Incluyen</h2>
+            </div>
+            <div class="servicios-grid">
+                <div class="servicio-item">
+                    <div class="servicio-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                            <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                            <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                        </svg>
+                    </div>
+                    <h3>Internet Wi-Fi</h3>
+                </div>
+                <div class="servicio-item">
+                    <div class="servicio-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                            <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01"></path>
+                        </svg>
+                    </div>
+                    <h3>Aire Acondicionado</h3>
+                </div>
+                <div class="servicio-item">
+                    <div class="servicio-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+                            <polyline points="17 2 12 7 7 2"></polyline>
+                        </svg>
+                    </div>
+                    <h3>TV por Cable</h3>
+                </div>
+                <div class="servicio-item">
+                    <div class="servicio-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <h3>Área Protegida</h3>
+                </div>
+                <div class="servicio-item">
+                    <div class="servicio-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M6 12h.01M6 16h.01M10 12h.01M10 16h.01M14 12h.01M14 16h.01M18 12h.01M18 16h.01"></path>
+                            <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                        </svg>
+                    </div>
+                    <h3>Piscina y Solarium</h3>
+                </div>
+                <div class="servicio-item">
+                    <div class="servicio-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M3 12h18M3 6h18M3 18h18"></path>
+                        </svg>
+                    </div>
+                    <h3>Cochera Cubierta</h3>
+                </div>
+                <div class="servicio-item">
+                    <div class="servicio-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                    <h3>Espacios Verdes</h3>
+                </div>
+                <div class="servicio-item">
+                    <div class="servicio-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M17.5 19H9a7 7 0 0 1 1-13.93M15 2a6 6 0 0 1 6 6c0 2.5-2 5-6 9-4-4-6-6.5-6-9a6 6 0 0 1 6-6z"></path>
+                        </svg>
+                    </div>
+                    <h3>Bajada Exclusiva al Río</h3>
+                </div>
+                <div class="servicio-item">
+                    <div class="servicio-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M20 10c0 4.4-3.6 8-8 8s-8-3.6-8-8 3.6-8 8-8 8 3.6 8 8z"></path>
+                            <path d="M12 6v6l4 2"></path>
+                        </svg>
+                    </div>
+                    <h3>Pet Friendly</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tarifas Section -->
+    <section id="tarifas" class="tarifas tarifas-bg">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Tarifas</h2>
+                <p class="section-subtitle">Precios por noche - Mínimo 2 noches de alojamiento</p>
+                <p class="tarifa-note">*NO INCLUYE DESAYUNO</p>
+            </div>
+
+            <div class="tarifas-grid">
+                <!-- Cabaña de Un Dormitorio -->
+                <div class="tarifa-card">
+                    <h3 class="tarifa-periodo">🏠 Cabaña de Un Dormitorio</h3>
+                    <p class="tarifa-minimo">Hasta 4 personas</p>
+                    
+                    <div class="tarifa-item">
+                        <ul>
+                            <li><strong>$90.000</strong> - Hasta 4 personas</li>
+                            <li><strong>$70.000</strong> - Dos personas (planta alta)</li>
+                            <li><strong>$80.000</strong> - Tres o cuatro personas (planta alta)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Cabaña de Dos Dormitorios -->
+                <div class="tarifa-card">
+                    <h3 class="tarifa-periodo">🏠 Cabaña de Dos Dormitorios</h3>
+                    <p class="tarifa-minimo">Hasta 5 personas</p>
+                    
+                    <div class="tarifa-item">
+                        <ul>
+                            <li><strong>$120.000</strong> - Para 5 personas</li>
+                            <li><strong>$110.000</strong> - Para 4 personas</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Loft de Dos Dormitorios -->
+                <div class="tarifa-card">
+                    <h3 class="tarifa-periodo">🏬 Loft de Dos Dormitorios</h3>
+                    <p class="tarifa-minimo">Hasta 5 personas</p>
+                    
+                    <div class="tarifa-item">
+                        <ul>
+                            <li><strong>$120.000</strong> - Hasta 5 personas</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonios Section -->
+    <section id="testimonios" class="testimonios">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Lo Que Dicen Nuestros Huéspedes</h2>
+            </div>
+            <div class="testimonios-grid">
+                <div class="testimonio-card">
+                    <div class="testimonio-stars">★★★★★</div>
+                    <p class="testimonio-text">"Un lugar mágico para desconectarse. La cabaña estaba impecable, con todas las comodidades. El entorno natural es increíble, perfecto para relajarse y disfrutar en familia."</p>
+                    <p class="testimonio-author">- María González</p>
+                </div>
+                <div class="testimonio-card">
+                    <div class="testimonio-stars">★★★★★</div>
+                    <p class="testimonio-text">"La paz y tranquilidad que se respira es indescriptible. Pasamos un fin de semana perfecto, el deck con vista al río es espectacular. Volveremos sin duda."</p>
+                    <p class="testimonio-author">- Carlos y Ana Martínez</p>
+                </div>
+                <div class="testimonio-card">
+                    <div class="testimonio-stars">★★★★★</div>
+                    <p class="testimonio-text">"Excelente atención y ubicación. Las cabañas están muy bien equipadas y el ambiente es ideal para descansar. La pileta y los espacios verdes son un plus enorme."</p>
+                    <p class="testimonio-author">- Familia Rodríguez</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ubicación Section -->
+    <section id="ubicacion" class="ubicacion ubicacion-bg">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Cómo Llegar</h2>
+                <p class="section-subtitle">Cabañas La Delfina - Oliveros, Santa Fe</p>
+            </div>
+            <div class="ubicacion-content">
+                <div class="map-container">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3348.1234567890!2d-60.8433072!3d-32.5869659!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95b6694cfa6f36c5%3A0xc87767ef98d8eb4f!2sLa%20Delfina%20Caba%C3%B1as!5e0!3m2!1ses!2sar!4v1234567890123!5m2!1ses!2sar" 
+                        width="100%" 
+                        height="450" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+                <div class="ubicacion-info">
+                    <h3>Información de Ubicación</h3>
+                    <p><strong>Dirección:</strong> Oliveros, Santa Fe, Argentina</p>
+                    <p><strong>Coordenadas:</strong> -32.5869659, -60.8433072</p>
+                    <p>Ubicadas en un entorno natural privilegiado, con fácil acceso desde la Ruta 11 y cercanas a los principales puntos turísticos de la región.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto Section -->
+    <section id="contacto" class="contacto">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Contacto y Reservas</h2>
+                <p class="section-subtitle">Estamos aquí para ayudarte a planificar tu escapada perfecta</p>
+            </div>
+            <div class="contacto-content">
+                <div class="contacto-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="nombre">Nombre</label>
+                            <input type="text" id="nombre" name="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="telefono">Teléfono</label>
+                            <input type="tel" id="telefono" name="telefono" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fechaEntrada">Fecha de Entrada</label>
+                                <input type="date" id="fechaEntrada" name="fechaEntrada" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="fechaSalida">Fecha de Salida</label>
+                                <input type="date" id="fechaSalida" name="fechaSalida" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tipoCabana">Tipo de Cabaña</label>
+                                <select id="tipoCabana" name="tipoCabana" required>
+                                    <option value="">Seleccione...</option>
+                                    <option value="un-dormitorio">Cabaña de Un Dormitorio</option>
+                                    <option value="dos-dormitorios">Cabaña de Dos Dormitorios</option>
+                                    <option value="loft">Loft de Dos Dormitorios</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="personas">Cantidad de Personas</label>
+                                <select id="personas" name="personas" required>
+                                    <option value="">Seleccione...</option>
+                                    <option value="2">2 personas</option>
+                                    <option value="3">3 personas</option>
+                                    <option value="4">4 personas</option>
+                                    <option value="5">5 personas</option>
+                                    <option value="6">6 personas</option>
+                                    <option value="7">7 personas</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="mensaje">Mensaje</label>
+                            <textarea id="mensaje" name="mensaje" rows="5"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enviar Consulta</button>
+                    </form>
+                </div>
+                <div class="contacto-info">
+                    <h3>Información de Contacto</h3>
+                <div class="contacto-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                    <div>
+                        <strong>Teléfono</strong>
+                        <p>54 11 66882626</p>
+                    </div>
+                </div>
+                    <div class="contacto-item">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <div>
+                            <strong>Email</strong>
+                            <p>reservas@ladelfinacabanas.com</p>
+                        </div>
+                    </div>
+                    <div class="contacto-item">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <div>
+                            <strong>Ubicación</strong>
+                            <p>Oliveros, Santa Fe, Argentina</p>
+                        </div>
+                    </div>
+                    <div class="whatsapp-link">
+                        <a href="https://wa.me/541166882626" target="_blank" class="btn btn-whatsapp">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                            </svg>
+                            Contactar por WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Cabañas La Delfina</h3>
+                    <p>El lugar ideal para tu descanso en Oliveros, Santa Fe</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul>
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="#cabanas">Cabañas</a></li>
+                        <li><a href="#servicios">Servicios</a></li>
+                        <li><a href="#tarifas">Tarifas</a></li>
+                        <li><a href="#contacto">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Información</h4>
+                    <p>Abierto todo el Año</p>
+                    <p>Escapadas de Fin de semana</p>
+                    <p>Feriados Largos</p>
+                    <p>Vacaciones de Verano/Invierno</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Cabañas La Delfina. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
