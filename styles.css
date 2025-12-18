@@ -274,9 +274,16 @@ h1, h2, h3, h4, h5, h6 {
 
 .hero-info {
     font-size: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
     opacity: 0.9;
     font-style: italic;
+}
+
+.hero-info-secondary {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    font-weight: 500;
 }
 
 .hero-scroll {
