@@ -24,18 +24,38 @@ export default async function handler(req, res) {
 
     try {
         // Listar archivos en la carpeta videos/
-        const { blobs } = await list({
-            prefix: 'videos/',
-            limit: 1000
-        });
+        let blobs;
+        try {
+            const result = await list({
+                prefix: 'videos/',
+                limit: 1000
+            });
+            blobs = result.blobs || [];
+        } catch (blobError) {
+            console.error('Error accediendo a Blob Storage:', blobError);
+            // Si el store está bloqueado o hay problemas, retornar error claro
+            return res.status(503).json({
+                error: 'Blob Storage no disponible',
+                detalles: blobError.message,
+                solucion: 'El Blob Store puede estar bloqueado. Considera usar YouTube para los videos.',
+                alternativas: [
+                    '1. Configura YouTube (ver CONFIGURAR_YOUTUBE.md)',
+                    '2. O desbloquea el Blob Store eliminando archivos grandes'
+                ]
+            });
+        }
         
-        console.log('Blobs encontrados:', blobs.length);
-        console.log('Primer blob ejemplo:', blobs[0]);
+        console.log('Blobs encontrados:', blobs?.length || 0);
+        
+        if (!blobs || blobs.length === 0) {
+            return res.status(200).json({ archivos: [] });
+        }
         
         // Filtrar solo videos e imágenes y obtener URLs correctas usando head()
         const archivos = await Promise.all(
             blobs
                 .filter(blob => {
+                    if (!blob || !blob.pathname) return false;
                     const ext = blob.pathname.split('.').pop().toLowerCase();
                     return ['mp4', 'mov', 'avi', 'mkv', 'webm', 'jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext);
                 })
