@@ -50,18 +50,21 @@ if (limpiarStoreBtn) {
             });
             
             if (data.totalSizeGB > 1) {
+                const espacioAEliminar = (data.totalSizeGB - 1).toFixed(2);
                 mensaje += `\n⚠️ ADVERTENCIA: Estás usando ${data.totalSizeGB} GB (límite: 1 GB)\n`;
-                mensaje += `Necesitas eliminar ${(data.totalSizeGB - 1).toFixed(2)} GB para desbloquear el store.\n\n`;
+                mensaje += `Necesitas eliminar ${espacioAEliminar} GB para desbloquear el store.\n\n`;
                 
                 if (data.archivosGrandes && data.archivosGrandes.length > 0) {
-                    mensaje += `💡 SUGERENCIA: Elimina los archivos más grandes primero:\n`;
+                    const totalGrandesMB = data.archivosGrandes.reduce((sum, a) => sum + parseFloat(a.sizeMB), 0);
+                    mensaje += `💡 Archivos grandes encontrados (${totalGrandesMB.toFixed(2)} MB total):\n`;
                     data.archivosGrandes.forEach(archivo => {
                         mensaje += `  - ${archivo.pathname}: ${archivo.sizeMB} MB\n`;
                     });
-                    mensaje += `\n¿Quieres eliminar estos archivos grandes ahora?`;
                     
-                    const eliminarGrandes = confirm(mensaje);
+                    const eliminarGrandes = confirm(mensaje + `\n\n¿Eliminar estos ${data.archivosGrandes.length} archivos grandes ahora?\nEsto liberará ${totalGrandesMB.toFixed(2)} MB.`);
+                    
                     if (eliminarGrandes) {
+                        limpiarStoreBtn.textContent = 'Eliminando...';
                         const pathnamesAEliminar = data.archivosGrandes.map(a => a.pathname);
                         const deleteResponse = await fetch('/api/limpiar-store', {
                             method: 'POST',
@@ -72,7 +75,14 @@ if (limpiarStoreBtn) {
                         });
                         
                         const deleteResult = await deleteResponse.json();
-                        alert(`✅ Eliminados ${deleteResult.eliminados} archivos grandes.\n\nEspera unos minutos y verifica el espacio en Vercel Dashboard.`);
+                        
+                        if (deleteResult.errores > 0) {
+                            alert(`⚠️ Eliminados ${deleteResult.eliminados} archivos.\nErrores: ${deleteResult.errores}\n\nRevisa los logs para más detalles.`);
+                        } else {
+                            alert(`✅ Eliminados ${deleteResult.eliminados} archivos grandes (${totalGrandesMB.toFixed(2)} MB liberados).\n\nEspera 2-5 minutos y verifica el espacio en Vercel Dashboard.\nEl store debería desbloquearse automáticamente.`);
+                        }
+                        
+                        limpiarStoreBtn.textContent = 'Limpiar Store';
                         return;
                     }
                 } else {
