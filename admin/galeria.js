@@ -247,13 +247,17 @@ async function cargarArchivos() {
         
         await cargarMetadata();
         mostrarArchivos();
+        */
     } catch (error) {
         console.error('Error cargando archivos:', error);
         document.getElementById('archivosList').innerHTML = 
             `<p class="error">
-                Error cargando archivos: ${error.message}<br><br>
-                💡 <strong>Recomendación:</strong> Configura YouTube para los videos<br>
-                Ver instrucciones en CONFIGURAR_YOUTUBE.md
+                ❌ Error cargando videos: ${error.message}<br><br>
+                💡 <strong>Verifica la configuración de YouTube:</strong><br>
+                • YOUTUBE_API_KEY está configurada en Vercel<br>
+                • YOUTUBE_PLAYLIST_ID está configurada en Vercel<br>
+                • Has hecho redeploy después de agregar las variables<br><br>
+                <strong>Ver instrucciones en CONFIGURAR_YOUTUBE.md</strong>
             </p>`;
     }
 }
