@@ -17,6 +17,53 @@ if (logoutBtn) {
     });
 }
 
+// Hacer videos públicos
+const makePublicBtn = document.getElementById('makePublicBtn');
+if (makePublicBtn) {
+    makePublicBtn.addEventListener('click', async () => {
+        if (!confirm('¿Estás seguro de que quieres hacer públicos todos los videos? Esto puede tardar unos minutos.')) {
+            return;
+        }
+
+        makePublicBtn.disabled = true;
+        makePublicBtn.textContent = 'Procesando...';
+
+        try {
+            const response = await fetch('/api/hacer-publicos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+
+            const result = await response.json();
+            
+            let mensaje = `Proceso completado:\n`;
+            mensaje += `- Total de archivos: ${result.total}\n`;
+            mensaje += `- Procesados: ${result.procesados}\n`;
+            if (result.errores > 0) {
+                mensaje += `- Errores: ${result.errores}\n`;
+            }
+
+            alert(mensaje);
+
+            // Recargar la lista de archivos
+            await cargarArchivos();
+
+        } catch (error) {
+            console.error('Error haciendo públicos los videos:', error);
+            alert('Error al hacer públicos los videos: ' + error.message);
+        } finally {
+            makePublicBtn.disabled = false;
+            makePublicBtn.textContent = 'Hacer Videos Públicos';
+        }
+    });
+}
+
 // Estado
 let archivos = [];
 let metadata = {};
