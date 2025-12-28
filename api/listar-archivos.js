@@ -1,6 +1,14 @@
 import { list, head } from '@vercel/blob';
 
+// Vercel Serverless Function handler
 export default async function handler(req, res) {
+    // Verificar que req y res existen (compatibilidad)
+    if (!req || !res) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: 'Invalid request/response objects' })
+        };
+    }
     // Habilitar CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
