@@ -21,6 +21,9 @@ export default async function handler(req, res) {
             limit: 1000
         });
         
+        console.log('Blobs encontrados:', blobs.length);
+        console.log('Primer blob ejemplo:', blobs[0]);
+        
         // Filtrar solo videos e imágenes y asegurar que tengan URL
         const archivos = blobs
             .filter(blob => {
@@ -28,22 +31,24 @@ export default async function handler(req, res) {
                 return ['mp4', 'mov', 'avi', 'mkv', 'webm', 'jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext);
             })
             .map(blob => {
-                // Asegurar que tenemos la URL correcta
-                let url = blob.url;
+                // La URL debería venir directamente del blob si es público
+                // Si no viene, intentamos construirla pero puede fallar si no es público
+                let url = blob.url || blob.downloadUrl || blob.publicUrl;
                 
-                // Si no hay URL directa, intentar construirla
+                // Si no hay URL, construirla (pero esto solo funciona si el archivo es público)
                 if (!url && blob.pathname) {
-                    // Construir URL pública de Blob Storage usando el formato correcto
-                    // El store ID sin "store_" y en minúsculas
-                    const storeId = '1noprvsrhcvtamry'; // De la Base URL que viste en Settings
+                    const storeId = '1noprvsrhcvtamry';
                     url = `https://${storeId}.public.blob.vercel-storage.com/${blob.pathname}`;
                 }
+                
+                console.log(`Archivo: ${blob.pathname}, URL: ${url}, Access: ${blob.access || 'unknown'}`);
                 
                 return {
                     pathname: blob.pathname,
                     url: url,
                     size: blob.size,
-                    uploadedAt: blob.uploadedAt
+                    uploadedAt: blob.uploadedAt,
+                    access: blob.access || 'unknown'
                 };
             });
 
