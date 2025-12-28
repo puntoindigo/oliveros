@@ -168,39 +168,49 @@ function seleccionarArchivo(index) {
     const videoPlayer = document.getElementById('videoPlayer');
     videoPlayer.style.display = 'block';
     
-    // Agregar event listeners para debugging
+    let errorShown = false;
+    let usingApiRoute = false;
+    
+    // Manejar errores de forma silenciosa si ya estamos usando la API route
     videoPlayer.addEventListener('error', (e) => {
-        console.error('❌ Error cargando video:', archivoActual.url);
-        console.error('Error details:', e);
-        console.error('Video error code:', videoPlayer.error?.code);
-        console.error('Video error message:', videoPlayer.error?.message);
-        mostrarEstado('error', `Error cargando video: ${videoPlayer.error?.message || 'No se pudo cargar el video'}`);
-    });
+        // Solo mostrar error si no estamos usando la API route aún
+        if (!usingApiRoute && !errorShown) {
+            const errorCode = videoPlayer.error?.code;
+            const errorMessage = videoPlayer.error?.message || '';
+            
+            // Ignorar errores de demuxer si el video se está cargando desde API
+            if (errorMessage.includes('DEMUXER_ERROR') || errorMessage.includes('Could not open')) {
+                // Intentar con API route inmediatamente
+                console.log('⚠️ Video directo no disponible, usando API route');
+                usingApiRoute = true;
+                videoPlayer.src = archivoActual.apiUrl;
+                videoPlayer.load();
+                return;
+            }
+            
+            // Solo mostrar errores críticos
+            if (errorCode === 4) { // MEDIA_ERR_SRC_NOT_SUPPORTED
+                console.error('❌ Formato de video no soportado:', archivoActual.url);
+                mostrarEstado('error', 'Formato de video no soportado');
+                errorShown = true;
+            }
+        }
+    }, { once: false });
     
     videoPlayer.addEventListener('loadstart', () => {
-        console.log('🔄 Iniciando carga del video:', archivoActual.url);
+        console.log('🔄 Iniciando carga del video:', usingApiRoute ? archivoActual.apiUrl : archivoActual.url);
     });
     
     videoPlayer.addEventListener('canplay', () => {
-        console.log('✅ Video listo para reproducir:', archivoActual.url);
+        console.log('✅ Video listo para reproducir');
+        errorShown = false; // Resetear flag si el video se carga correctamente
     });
     
-    // Intentar cargar primero desde la ruta directa
-    videoPlayer.src = archivoActual.url;
+    // Intentar primero con la API route directamente (más confiable con Git LFS)
+    // Si prefieres intentar primero la ruta directa, cambia el orden
+    videoPlayer.src = archivoActual.apiUrl;
+    usingApiRoute = true;
     videoPlayer.load();
-    
-    // Si falla después de 3 segundos, intentar con la API
-    const fallbackTimeout = setTimeout(() => {
-        if (videoPlayer.readyState === 0 || videoPlayer.error) {
-            console.log('⚠️ Video directo falló, intentando con API:', archivoActual.apiUrl);
-            videoPlayer.src = archivoActual.apiUrl;
-            videoPlayer.load();
-        }
-    }, 3000);
-    
-    videoPlayer.addEventListener('canplay', () => {
-        clearTimeout(fallbackTimeout);
-    }, { once: true });
 }
 
 // Guardar cambios
