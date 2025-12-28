@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Sitio web de Cabañas La Delfina - Oliveros, Santa Fe",
   "scripts": {
-    "vercel-build": "echo 'No build step required for static site'"
+    "vercel-build": "git lfs pull || echo 'Git LFS not available, skipping'"
   },
   "keywords": ["cabañas", "turismo", "oliveros", "santa-fe"],
   "author": "Cabañas La Delfina",

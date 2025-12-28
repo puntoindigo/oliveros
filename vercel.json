@@ -36,6 +36,10 @@
       "destination": "/api/$1"
     },
     {
+      "source": "/admin/videos/(.*)",
+      "destination": "/admin/videos/$1"
+    },
+    {
       "source": "/admin",
       "destination": "/admin/index.html"
     },
