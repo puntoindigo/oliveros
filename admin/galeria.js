@@ -185,12 +185,17 @@ let archivoActual = null;
 // Cargar archivos desde Vercel Blob o YouTube
 async function cargarArchivos() {
     try {
-        // Intentar cargar desde YouTube primero
-        const youtubeResponse = await fetch('/api/youtube-videos?playlistId=TU_PLAYLIST_ID');
+        // Intentar cargar desde YouTube primero (si está configurado)
+        const youtubeResponse = await fetch('/api/youtube-videos');
+        
         if (youtubeResponse.ok) {
             const youtubeData = await youtubeResponse.json();
             
-            if (youtubeData.videos && youtubeData.videos.length > 0) {
+            // Si hay configuración necesaria, mostrar mensaje
+            if (youtubeData.configuracionNecesaria) {
+                console.log('YouTube no configurado:', youtubeData.mensaje);
+                // Continuar con Vercel Blob
+            } else if (youtubeData.videos && youtubeData.videos.length > 0) {
                 // Convertir videos de YouTube al formato esperado
                 archivos = youtubeData.videos.map(video => ({
                     pathname: `youtube/${video.videoId}`,

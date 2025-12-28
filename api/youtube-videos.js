@@ -13,12 +13,20 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { playlistId, channelId } = req.query;
+        // Obtener playlistId o channelId de query params o variables de entorno
+        const playlistId = req.query.playlistId || process.env.YOUTUBE_PLAYLIST_ID;
+        const channelId = req.query.channelId || process.env.YOUTUBE_CHANNEL_ID;
         
         if (!playlistId && !channelId) {
-            return res.status(400).json({ 
-                error: 'Se requiere playlistId o channelId',
-                instrucciones: 'Pasa ?playlistId=TU_PLAYLIST_ID o ?channelId=TU_CHANNEL_ID'
+            return res.status(200).json({
+                configuracionNecesaria: true,
+                mensaje: 'YouTube no está configurado',
+                instrucciones: [
+                    '1. Crea una playlist en YouTube',
+                    '2. Obtén el Playlist ID de la URL',
+                    '3. Agrega YOUTUBE_PLAYLIST_ID como variable de entorno en Vercel',
+                    '4. O configura YOUTUBE_CHANNEL_ID si prefieres usar el canal completo'
+                ]
             });
         }
 
