@@ -51,7 +51,33 @@ if (limpiarStoreBtn) {
             
             if (data.totalSizeGB > 1) {
                 mensaje += `\n⚠️ ADVERTENCIA: Estás usando ${data.totalSizeGB} GB (límite: 1 GB)\n`;
-                mensaje += `Necesitas eliminar ${(data.totalSizeGB - 1).toFixed(2)} GB para desbloquear el store.`;
+                mensaje += `Necesitas eliminar ${(data.totalSizeGB - 1).toFixed(2)} GB para desbloquear el store.\n\n`;
+                
+                if (data.archivosGrandes && data.archivosGrandes.length > 0) {
+                    mensaje += `💡 SUGERENCIA: Elimina los archivos más grandes primero:\n`;
+                    data.archivosGrandes.forEach(archivo => {
+                        mensaje += `  - ${archivo.pathname}: ${archivo.sizeMB} MB\n`;
+                    });
+                    mensaje += `\n¿Quieres eliminar estos archivos grandes ahora?`;
+                    
+                    const eliminarGrandes = confirm(mensaje);
+                    if (eliminarGrandes) {
+                        const pathnamesAEliminar = data.archivosGrandes.map(a => a.pathname);
+                        const deleteResponse = await fetch('/api/limpiar-store', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ pathnames: pathnamesAEliminar })
+                        });
+                        
+                        const deleteResult = await deleteResponse.json();
+                        alert(`✅ Eliminados ${deleteResult.eliminados} archivos grandes.\n\nEspera unos minutos y verifica el espacio en Vercel Dashboard.`);
+                        return;
+                    }
+                } else {
+                    mensaje += `\n💡 Puedes eliminar archivos manualmente desde Storage → Browser`;
+                }
             }
 
             alert(mensaje);

@@ -59,7 +59,8 @@ export default async function handler(req, res) {
                 totalSizeMB: (totalSize / (1024 * 1024)).toFixed(2),
                 totalSizeGB: (totalSize / (1024 * 1024 * 1024)).toFixed(2),
                 duplicados: duplicados,
-                archivos: todosArchivos
+                archivos: todosArchivos,
+                archivosGrandes: todosArchivos.filter(a => (a.size || 0) > 100 * 1024 * 1024) // > 100MB
             });
 
         } catch (error) {
