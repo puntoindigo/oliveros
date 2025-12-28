@@ -24,39 +24,33 @@ export default async function handler(req, res) {
         // Obtener playlistId o channelId de query params o variables de entorno
         const playlistId = req.query.playlistId || process.env.YOUTUBE_PLAYLIST_ID;
         const channelId = req.query.channelId || process.env.YOUTUBE_CHANNEL_ID;
-        
-        if (!playlistId && !channelId) {
-            return res.status(200).json({
-                configuracionNecesaria: true,
-                mensaje: 'YouTube no está configurado',
-                instrucciones: [
-                    '1. Crea una playlist en YouTube',
-                    '2. Obtén el Playlist ID de la URL',
-                    '3. Agrega YOUTUBE_PLAYLIST_ID como variable de entorno en Vercel',
-                    '4. O configura YOUTUBE_CHANNEL_ID si prefieres usar el canal completo'
-                ]
-            });
-        }
-
-        // Si tienes API key de YouTube, úsala aquí
-        // Por ahora, retornamos estructura para que el usuario configure
         const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
         
+        // Verificar configuración
         if (!YOUTUBE_API_KEY) {
             return res.status(200).json({
                 configuracionNecesaria: true,
-                mensaje: 'Necesitas configurar YOUTUBE_API_KEY en Vercel',
+                mensaje: 'YOUTUBE_API_KEY no está configurada',
                 instrucciones: [
                     '1. Ve a https://console.cloud.google.com/',
                     '2. Crea un proyecto o selecciona uno existente',
                     '3. Habilita YouTube Data API v3',
                     '4. Crea una API Key',
                     '5. Agrega YOUTUBE_API_KEY como variable de entorno en Vercel'
-                ],
-                ejemplo: {
-                    playlistId: playlistId || 'no configurado',
-                    channelId: channelId || 'no configurado'
-                }
+                ]
+            });
+        }
+        
+        if (!playlistId && !channelId) {
+            return res.status(200).json({
+                configuracionNecesaria: true,
+                mensaje: 'YOUTUBE_PLAYLIST_ID o YOUTUBE_CHANNEL_ID no está configurado',
+                instrucciones: [
+                    '1. Crea una playlist en YouTube',
+                    '2. Obtén el Playlist ID de la URL (ej: PLxxxxxxxxxxxxx)',
+                    '3. Agrega YOUTUBE_PLAYLIST_ID como variable de entorno en Vercel',
+                    '4. O configura YOUTUBE_CHANNEL_ID si prefieres usar el canal completo'
+                ]
             });
         }
 

@@ -182,20 +182,18 @@ let archivos = [];
 let metadata = {};
 let archivoActual = null;
 
-// Cargar archivos desde Vercel Blob o YouTube
+// Cargar archivos desde YouTube (principal) o Vercel Blob (fallback)
 async function cargarArchivos() {
     try {
-        // Intentar cargar desde YouTube primero (si está configurado)
+        // PRIMERO: Intentar cargar desde YouTube (fuente principal)
         const youtubeResponse = await fetch('/api/youtube-videos');
         
         if (youtubeResponse.ok) {
             const youtubeData = await youtubeResponse.json();
             
-            // Si hay configuración necesaria, mostrar mensaje
-            if (youtubeData.configuracionNecesaria) {
-                console.log('YouTube no configurado:', youtubeData.mensaje);
-                // Continuar con Vercel Blob
-            } else if (youtubeData.videos && youtubeData.videos.length > 0) {
+            // Si YouTube está configurado y tiene videos, usarlo
+            if (youtubeData.videos && youtubeData.videos.length > 0) {
+                console.log('✅ Cargando videos desde YouTube:', youtubeData.videos.length);
                 // Convertir videos de YouTube al formato esperado
                 archivos = youtubeData.videos.map(video => ({
                     pathname: `youtube/${video.videoId}`,
@@ -210,9 +208,23 @@ async function cargarArchivos() {
                 mostrarArchivos();
                 return;
             }
+            
+            // Si YouTube no está configurado, mostrar mensaje
+            if (youtubeData.configuracionNecesaria) {
+                document.getElementById('archivosList').innerHTML = 
+                    `<p class="error">
+                        ⚠️ YouTube no está configurado<br><br>
+                        ${youtubeData.mensaje || 'Configura YouTube para usar los videos'}<br><br>
+                        💡 <strong>Instrucciones:</strong><br>
+                        ${(youtubeData.instrucciones || []).join('<br>')}<br><br>
+                        Ver detalles en CONFIGURAR_YOUTUBE.md
+                    </p>`;
+                return;
+            }
         }
         
-        // Si no hay videos de YouTube, cargar desde Vercel Blob
+        // FALLBACK: Solo usar Vercel Blob si YouTube no está disponible
+        console.log('⚠️ YouTube no disponible, intentando Blob Storage como fallback...');
         const response = await fetch('/api/listar-archivos');
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
@@ -238,7 +250,11 @@ async function cargarArchivos() {
     } catch (error) {
         console.error('Error cargando archivos:', error);
         document.getElementById('archivosList').innerHTML = 
-            '<p class="error">Error cargando archivos. Verifica la configuración.</p>';
+            `<p class="error">
+                Error cargando archivos: ${error.message}<br><br>
+                💡 <strong>Recomendación:</strong> Configura YouTube para los videos<br>
+                Ver instrucciones en CONFIGURAR_YOUTUBE.md
+            </p>`;
     }
 }
 
