@@ -39,9 +39,11 @@ let archivoActual = null;
 async function cargarArchivos() {
     try {
         // Convertir lista de videos al formato esperado
+        // Intentar primero con ruta directa, luego con API como fallback
         archivos = VIDEOS_LIST.map(filename => ({
             pathname: `videos/${filename}`,
             url: `${VIDEOS_FOLDER}${filename}`,
+            apiUrl: `/api/video?filename=${encodeURIComponent(filename)}`,
             filename: filename,
             nombreSinExtension: filename.replace(/\.[^/.]+$/, '')
         }));
@@ -183,8 +185,22 @@ function seleccionarArchivo(index) {
         console.log('✅ Video listo para reproducir:', archivoActual.url);
     });
     
+    // Intentar cargar primero desde la ruta directa
     videoPlayer.src = archivoActual.url;
     videoPlayer.load();
+    
+    // Si falla después de 3 segundos, intentar con la API
+    const fallbackTimeout = setTimeout(() => {
+        if (videoPlayer.readyState === 0 || videoPlayer.error) {
+            console.log('⚠️ Video directo falló, intentando con API:', archivoActual.apiUrl);
+            videoPlayer.src = archivoActual.apiUrl;
+            videoPlayer.load();
+        }
+    }, 3000);
+    
+    videoPlayer.addEventListener('canplay', () => {
+        clearTimeout(fallbackTimeout);
+    }, { once: true });
 }
 
 // Guardar cambios
