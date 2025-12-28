@@ -46,6 +46,9 @@ async function cargarArchivos() {
             nombreSinExtension: filename.replace(/\.[^/.]+$/, '')
         }));
         
+        console.log('📹 Videos cargados:', archivos.length);
+        console.log('📹 URLs de videos:', archivos.map(a => a.url));
+        
         await cargarMetadata();
         mostrarArchivos();
     } catch (error) {
@@ -106,8 +109,11 @@ function mostrarArchivos() {
     
     if (archivos.length === 0) {
         container.innerHTML = '<p>No hay videos disponibles.</p>';
+        console.warn('⚠️ No hay videos en la lista');
         return;
     }
+    
+    console.log('📋 Mostrando', archivos.length, 'videos en la lista');
     
     container.innerHTML = archivos.map((archivo, index) => {
         const meta = metadata[archivo.pathname] || {};
@@ -128,6 +134,8 @@ function mostrarArchivos() {
             seleccionarArchivo(index);
         });
     });
+    
+    console.log('✅ Lista de videos renderizada');
 }
 
 // Seleccionar archivo
