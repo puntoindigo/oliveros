@@ -155,8 +155,13 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
     const titulo = document.getElementById('archivoTitulo').value.trim();
     const comentarios = document.getElementById('archivoComentarios').value.trim();
     
+    // Si el título está vacío, usar nombre sin extensión
+    const nombreArchivo = archivoActual.pathname.split('/').pop();
+    const nombreSinExtension = nombreArchivo.replace(/\.[^/.]+$/, '');
+    const tituloFinal = titulo || nombreSinExtension;
+    
     metadata[archivoActual.pathname] = {
-        titulo,
+        titulo: tituloFinal,
         comentarios,
         fechaActualizacion: new Date().toISOString()
     };
