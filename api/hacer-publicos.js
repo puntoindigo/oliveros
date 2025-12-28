@@ -1,4 +1,4 @@
-import { list, head, del, put } from '@vercel/blob';
+import { list, head, del, put, get } from '@vercel/blob';
 
 export default async function handler(req, res) {
     // Habilitar CORS
@@ -39,35 +39,43 @@ export default async function handler(req, res) {
                     continue;
                 }
 
-                // Obtener el contenido del archivo
-                // Intentar diferentes URLs posibles
-                let fileResponse;
-                const urlsToTry = [
-                    blob.url,
-                    blob.downloadUrl,
-                    blob.publicUrl,
-                    `https://1noprvsrhcvtamry.public.blob.vercel-storage.com/${blob.pathname}`
-                ].filter(Boolean);
+                // Obtener el contenido del archivo usando la API de Vercel Blob
+                // Esto funciona incluso si el archivo es privado porque usamos el token del servidor
+                let fileBuffer;
+                let contentType = blob.contentType || blobInfo.contentType || 'application/octet-stream';
+                
+                try {
+                    // Intentar usar get() de @vercel/blob para obtener el contenido directamente
+                    const blobContent = await get(blob.pathname);
+                    fileBuffer = await blobContent.arrayBuffer();
+                    contentType = blobContent.contentType || contentType;
+                } catch (getError) {
+                    // Si get() falla, intentar descargar desde la URL
+                    console.log(`get() falló para ${blob.pathname}, intentando fetch...`);
+                    const urlsToTry = [
+                        blob.url,
+                        blob.downloadUrl,
+                        blob.publicUrl
+                    ].filter(Boolean);
 
-                let downloaded = false;
-                for (const url of urlsToTry) {
-                    try {
-                        fileResponse = await fetch(url);
-                        if (fileResponse.ok) {
-                            downloaded = true;
-                            break;
+                    let downloaded = false;
+                    for (const url of urlsToTry) {
+                        try {
+                            const fileResponse = await fetch(url);
+                            if (fileResponse.ok) {
+                                fileBuffer = await fileResponse.arrayBuffer();
+                                downloaded = true;
+                                break;
+                            }
+                        } catch (e) {
+                            continue;
                         }
-                    } catch (e) {
-                        continue;
+                    }
+
+                    if (!downloaded) {
+                        throw new Error(`No se pudo obtener el contenido de ${blob.pathname}`);
                     }
                 }
-
-                if (!downloaded || !fileResponse.ok) {
-                    throw new Error(`No se pudo descargar ${blob.pathname}. El archivo puede ser privado y requerir autenticación.`);
-                }
-
-                const fileBuffer = await fileResponse.arrayBuffer();
-                const contentType = blob.contentType || blobInfo.contentType || 'application/octet-stream';
 
                 // Eliminar el archivo privado
                 await del(blob.pathname);
