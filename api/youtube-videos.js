@@ -124,6 +124,22 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error('Error obteniendo videos de YouTube:', error);
+        
+        // Si es un error de API de YouTube, devolver detalles útiles
+        if (error.message.includes('YouTube API')) {
+            return res.status(200).json({
+                configuracionNecesaria: true,
+                mensaje: 'Error al conectar con YouTube API',
+                instrucciones: [
+                    '1. Verifica que YOUTUBE_API_KEY sea válida',
+                    '2. Verifica que YOUTUBE_PLAYLIST_ID sea correcto',
+                    '3. Asegúrate de haber hecho redeploy después de configurar las variables',
+                    '4. Verifica que la playlist sea pública o que la API key tenga permisos'
+                ],
+                error: error.message
+            });
+        }
+        
         return res.status(500).json({
             error: 'Error obteniendo videos de YouTube',
             details: error.message
