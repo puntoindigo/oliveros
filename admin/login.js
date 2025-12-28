@@ -19,7 +19,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
         sessionStorage.setItem('adminUser', username);
         
         // Redirigir a galería (sin parámetros en URL)
-        window.location.href = 'admin/galeria.html';
+        window.location.href = 'galeria.html';
     } else {
         errorDiv.textContent = 'Usuario o contraseña incorrectos';
         errorDiv.classList.add('show');
@@ -31,7 +31,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
 
 // Verificar si ya está logueado
 if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-    window.location.href = 'admin/galeria.html';
+    window.location.href = 'galeria.html';
 }
 
 // Limpiar URL si tiene parámetros
