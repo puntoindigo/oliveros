@@ -87,10 +87,19 @@ export default async function handler(req, res) {
                     addRandomSuffix: false,
                 });
 
+                // Verificar que realmente se hizo público
+                const verifyBlob = await head(blob.pathname);
+                const finalUrl = verifyBlob.url || newBlob.url;
+
+                console.log(`Archivo ${blob.pathname} procesado:`);
+                console.log(`  - Nueva URL: ${finalUrl}`);
+                console.log(`  - Es pública: ${finalUrl.includes('.public.blob.vercel-storage.com')}`);
+
                 resultados.push({
                     pathname: blob.pathname,
                     status: 'made_public',
-                    url: newBlob.url
+                    url: finalUrl,
+                    verified: finalUrl.includes('.public.blob.vercel-storage.com')
                 });
 
             } catch (error) {
