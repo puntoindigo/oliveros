@@ -139,14 +139,24 @@ function seleccionarArchivo(index) {
     document.getElementById('archivoComentarios').value = meta.comentarios || '';
     
     // Cargar media
-    const url = archivoActual.url;
+    let url = archivoActual.url;
+    
+    // Si no hay URL directa, construirla desde el pathname
+    if (!url && archivoActual.pathname) {
+        // La URL debería venir del blob, pero si no está, intentamos construirla
+        // Esto es un fallback - normalmente debería venir del API
+        console.warn('No URL found for file, using pathname:', archivoActual.pathname);
+    }
+    
     const tipo = archivoActual.pathname.split('.').pop().toLowerCase();
-    const esVideo = ['mp4', 'mov', 'avi'].includes(tipo);
+    const esVideo = ['mp4', 'mov', 'avi', 'mkv', 'webm'].includes(tipo);
     
     if (esVideo) {
         document.getElementById('videoContainer').style.display = 'block';
         document.getElementById('imageContainer').style.display = 'none';
-        document.getElementById('videoPlayer').src = url;
+        const videoPlayer = document.getElementById('videoPlayer');
+        videoPlayer.src = url;
+        videoPlayer.load(); // Recargar el video con la nueva URL
     } else {
         document.getElementById('videoContainer').style.display = 'none';
         document.getElementById('imageContainer').style.display = 'block';
