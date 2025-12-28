@@ -70,13 +70,16 @@ async function guardarMetadata() {
         });
         
         if (!response.ok) {
-            throw new Error('Error guardando metadata');
+            const errorData = await response.json().catch(() => ({}));
+            console.error('Error response:', errorData);
+            throw new Error(errorData.details || errorData.error || 'Error guardando metadata');
         }
         
+        const result = await response.json();
         mostrarEstado('success', 'Cambios guardados correctamente');
     } catch (error) {
         console.error('Error guardando metadata:', error);
-        mostrarEstado('error', 'Error al guardar. Intenta nuevamente.');
+        mostrarEstado('error', `Error al guardar: ${error.message}. Intenta nuevamente.`);
     }
 }
 
