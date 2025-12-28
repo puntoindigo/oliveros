@@ -162,7 +162,6 @@ function seleccionarArchivo(index) {
     // Cargar video
     document.getElementById('videoContainer').style.display = 'block';
     document.getElementById('imageContainer').style.display = 'none';
-    document.getElementById('youtubeContainer').innerHTML = '';
     
     const videoPlayer = document.getElementById('videoPlayer');
     videoPlayer.style.display = 'block';
