@@ -20,15 +20,6 @@ if (sessionStorage.getItem('adminLoggedIn') !== 'true') {
     window.location.href = '/admin/index.html';
 }
 
-// Abrir menú por defecto al cargar si no hay archivo seleccionado
-window.addEventListener('DOMContentLoaded', () => {
-    const noSelection = document.getElementById('noSelection');
-    if (noSelection && noSelection.style.display !== 'none') {
-        burgerMenu.classList.add('active');
-        mobileMenu.classList.add('open');
-    }
-});
-
 // Estado
 let archivos = [];
 let metadata = {};
@@ -38,13 +29,7 @@ let archivoActual = null;
 const burgerMenu = document.getElementById('burgerMenu');
 const mobileMenu = document.getElementById('mobileMenu');
 
-// Abrir menú por defecto cuando no hay archivo seleccionado
-const noSelection = document.getElementById('noSelection');
-if (noSelection && noSelection.style.display !== 'none') {
-    burgerMenu.classList.add('active');
-    mobileMenu.classList.add('open');
-}
-
+// El menú ya está abierto por defecto en el HTML, solo necesitamos el toggle
 burgerMenu.addEventListener('click', () => {
     burgerMenu.classList.toggle('active');
     mobileMenu.classList.toggle('open');
