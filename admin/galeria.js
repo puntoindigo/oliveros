@@ -1,5 +1,3 @@
-import { list, head } from 'https://esm.sh/@vercel/blob@0.19.0';
-
 // Configuración - REEMPLAZA ESTOS VALORES
 const BLOB_STORE_ID = 'store_1noPrVsRhcvtAmRY'; // Tu Store ID de Vercel
 const METADATA_FILE = 'galeria-metadata.json';
@@ -24,15 +22,13 @@ let archivoActual = null;
 // Cargar archivos desde Vercel Blob
 async function cargarArchivos() {
     try {
-        const { blobs } = await list({
-            prefix: 'videos/', // Carpeta donde subiste los videos
-            limit: 1000
-        });
+        const response = await fetch('/api/listar-archivos');
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor');
+        }
         
-        archivos = blobs.filter(blob => {
-            const ext = blob.pathname.split('.').pop().toLowerCase();
-            return ['mp4', 'mov', 'avi', 'jpg', 'jpeg', 'png', 'webp'].includes(ext);
-        });
+        const data = await response.json();
+        archivos = data.archivos || [];
         
         await cargarMetadata();
         mostrarArchivos();
@@ -46,9 +42,10 @@ async function cargarArchivos() {
 // Cargar metadata (títulos y comentarios)
 async function cargarMetadata() {
     try {
-        const response = await fetch(`https://${BLOB_STORE_ID}.public.blob.vercel-storage.com/${METADATA_FILE}`);
+        const response = await fetch('/api/cargar-metadata');
         if (response.ok) {
-            metadata = await response.json();
+            const data = await response.json();
+            metadata = data.metadata || {};
         } else {
             metadata = {};
         }
