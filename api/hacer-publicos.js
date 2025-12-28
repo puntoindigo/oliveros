@@ -40,13 +40,34 @@ export default async function handler(req, res) {
                 }
 
                 // Obtener el contenido del archivo
-                const fileResponse = await fetch(blob.url || blob.downloadUrl);
-                if (!fileResponse.ok) {
-                    throw new Error(`No se pudo descargar ${blob.pathname}`);
+                // Intentar diferentes URLs posibles
+                let fileResponse;
+                const urlsToTry = [
+                    blob.url,
+                    blob.downloadUrl,
+                    blob.publicUrl,
+                    `https://1noprvsrhcvtamry.public.blob.vercel-storage.com/${blob.pathname}`
+                ].filter(Boolean);
+
+                let downloaded = false;
+                for (const url of urlsToTry) {
+                    try {
+                        fileResponse = await fetch(url);
+                        if (fileResponse.ok) {
+                            downloaded = true;
+                            break;
+                        }
+                    } catch (e) {
+                        continue;
+                    }
+                }
+
+                if (!downloaded || !fileResponse.ok) {
+                    throw new Error(`No se pudo descargar ${blob.pathname}. El archivo puede ser privado y requerir autenticación.`);
                 }
 
                 const fileBuffer = await fileResponse.arrayBuffer();
-                const contentType = blob.contentType || 'application/octet-stream';
+                const contentType = blob.contentType || blobInfo.contentType || 'application/octet-stream';
 
                 // Eliminar el archivo privado
                 await del(blob.pathname);
