@@ -17,6 +17,83 @@ if (logoutBtn) {
     });
 }
 
+// Limpiar store - Ver qué archivos ocupan espacio
+const limpiarStoreBtn = document.getElementById('limpiarStoreBtn');
+if (limpiarStoreBtn) {
+    limpiarStoreBtn.addEventListener('click', async () => {
+        limpiarStoreBtn.disabled = true;
+        limpiarStoreBtn.textContent = 'Analizando...';
+
+        try {
+            const response = await fetch('/api/limpiar-store');
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+
+            const data = await response.json();
+            
+            let mensaje = `📊 Análisis del Store:\n\n`;
+            mensaje += `Total de archivos: ${data.totalArchivos}\n`;
+            mensaje += `Espacio usado: ${data.totalSizeGB} GB (${data.totalSizeMB} MB)\n\n`;
+            
+            if (data.duplicados.length > 0) {
+                mensaje += `⚠️ Duplicados encontrados: ${data.duplicados.length}\n`;
+                data.duplicados.forEach(dup => {
+                    mensaje += `  - ${dup.nombre}: ${dup.cantidad} copias\n`;
+                });
+                mensaje += `\n`;
+            }
+            
+            mensaje += `📁 Archivos más grandes:\n`;
+            data.archivos.slice(0, 10).forEach(archivo => {
+                mensaje += `  - ${archivo.pathname}: ${archivo.sizeMB} MB\n`;
+            });
+            
+            if (data.totalSizeGB > 1) {
+                mensaje += `\n⚠️ ADVERTENCIA: Estás usando ${data.totalSizeGB} GB (límite: 1 GB)\n`;
+                mensaje += `Necesitas eliminar ${(data.totalSizeGB - 1).toFixed(2)} GB para desbloquear el store.`;
+            }
+
+            alert(mensaje);
+            
+            // Si hay duplicados, preguntar si quiere eliminarlos
+            if (data.duplicados.length > 0) {
+                const eliminarDuplicados = confirm(`¿Quieres eliminar los duplicados? Se eliminarán ${data.duplicados.length} archivos duplicados.`);
+                if (eliminarDuplicados) {
+                    const pathnamesAEliminar = [];
+                    data.duplicados.forEach(dup => {
+                        // Mantener el más reciente, eliminar los demás
+                        const ordenados = dup.archivos.sort((a, b) => 
+                            new Date(b.uploadedAt) - new Date(a.uploadedAt)
+                        );
+                        ordenados.slice(1).forEach(archivo => {
+                            pathnamesAEliminar.push(archivo.pathname);
+                        });
+                    });
+                    
+                    const deleteResponse = await fetch('/api/limpiar-store', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ pathnames: pathnamesAEliminar })
+                    });
+                    
+                    const deleteResult = await deleteResponse.json();
+                    alert(`Eliminados ${deleteResult.eliminados} archivos duplicados.`);
+                }
+            }
+
+        } catch (error) {
+            console.error('Error analizando store:', error);
+            alert('Error al analizar el store: ' + error.message);
+        } finally {
+            limpiarStoreBtn.disabled = false;
+            limpiarStoreBtn.textContent = 'Limpiar Store';
+        }
+    });
+}
+
 // Hacer videos públicos
 const makePublicBtn = document.getElementById('makePublicBtn');
 if (makePublicBtn) {
