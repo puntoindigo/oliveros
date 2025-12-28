@@ -27,12 +27,24 @@ export default async function handler(req, res) {
                 const ext = blob.pathname.split('.').pop().toLowerCase();
                 return ['mp4', 'mov', 'avi', 'mkv', 'webm', 'jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext);
             })
-            .map(blob => ({
-                pathname: blob.pathname,
-                url: blob.url || blob.downloadUrl || blob.uploadedAt,
-                size: blob.size,
-                uploadedAt: blob.uploadedAt
-            }));
+            .map(blob => {
+                // Asegurar que tenemos la URL correcta
+                let url = blob.url;
+                
+                // Si no hay URL directa, intentar construirla
+                if (!url && blob.pathname) {
+                    // Construir URL pública de Blob Storage
+                    const storeId = process.env.BLOB_STORE_ID || 'store_1noPrVsRhcvtAmRY';
+                    url = `https://${storeId}.public.blob.vercel-storage.com/${blob.pathname}`;
+                }
+                
+                return {
+                    pathname: blob.pathname,
+                    url: url,
+                    size: blob.size,
+                    uploadedAt: blob.uploadedAt
+                };
+            });
 
         return res.status(200).json({ archivos });
     } catch (error) {
