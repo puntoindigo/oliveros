@@ -57,30 +57,16 @@ async function cargarArchivos() {
     }
 }
 
-// Cargar metadata desde JSON estático y localStorage
+// Cargar metadata desde API (lee del JSON estático)
 async function cargarMetadata() {
     try {
-        // Intentar cargar desde JSON estático primero
-        try {
-            const jsonResponse = await fetch(`${VIDEOS_FOLDER}../${METADATA_FILE}`);
-            if (jsonResponse.ok) {
-                const jsonData = await jsonResponse.json();
-                metadata = jsonData;
-                console.log('✅ Metadata cargada desde JSON estático');
-            }
-        } catch (error) {
-            console.log('ℹ️ No se encontró JSON estático, usando localStorage');
-        }
-        
-        // Cargar desde localStorage como respaldo/complemento
-        const savedMetadata = localStorage.getItem('galeria-metadata');
-        if (savedMetadata) {
-            const localMetadata = JSON.parse(savedMetadata);
-            // Combinar: localStorage tiene prioridad sobre JSON estático
-            metadata = { ...metadata, ...localMetadata };
-        }
-        
-        if (Object.keys(metadata).length === 0) {
+        const response = await fetch('/api/metadata');
+        if (response.ok) {
+            const jsonData = await response.json();
+            metadata = jsonData;
+            console.log('✅ Metadata cargada desde JSON');
+        } else {
+            console.log('ℹ️ No se encontró metadata, iniciando vacío');
             metadata = {};
         }
     } catch (error) {
@@ -89,28 +75,30 @@ async function cargarMetadata() {
     }
 }
 
-// Guardar metadata en localStorage
+// Guardar metadata directamente en el JSON usando API
 async function guardarMetadata() {
     try {
-        localStorage.setItem('galeria-metadata', JSON.stringify(metadata));
-        mostrarEstado('success', 'Cambios guardados correctamente');
+        const response = await fetch('/api/metadata', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(metadata)
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            mostrarEstado('success', result.message || 'Cambios guardados correctamente en el JSON');
+        } else {
+            const errorData = await response.json();
+            throw new Error(errorData.details || errorData.mensaje || 'Error al guardar');
+        }
     } catch (error) {
         console.error('Error guardando metadata:', error);
-        mostrarEstado('error', `Error al guardar: ${error.message}. Intenta nuevamente.`);
+        mostrarEstado('error', `Error al guardar: ${error.message}. Verifica que GITHUB_TOKEN esté configurado en Vercel.`);
     }
 }
 
-// Descargar metadata como JSON
-function descargarMetadata() {
-    const dataStr = JSON.stringify(metadata, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = METADATA_FILE;
-    link.click();
-    URL.revokeObjectURL(url);
-}
 
 // Mostrar lista de archivos
 function mostrarArchivos() {
