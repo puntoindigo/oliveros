@@ -93,7 +93,7 @@ async function guardarMetadata() {
 
         if (response.ok) {
             const result = await response.json();
-            mostrarEstado('success', result.message || 'Cambios guardados correctamente en el JSON');
+            mostrarEstado('success', '✅ Cambios guardados correctamente');
         } else {
             const errorData = await response.json();
             throw new Error(errorData.details || errorData.mensaje || 'Error al guardar');
@@ -235,15 +235,78 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
 });
 
 function mostrarEstado(tipo, mensaje) {
-    const status = document.getElementById('saveStatus');
-    status.className = `save-status ${tipo}`;
-    status.textContent = mensaje;
-    status.style.display = 'block';
+    // Crear toast notification si no existe
+    let toast = document.getElementById('toastNotification');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toastNotification';
+        toast.style.cssText = `
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #2c5530;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 10000;
+            font-size: 1rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.3s ease;
+            max-width: 90%;
+            text-align: center;
+        `;
+        document.body.appendChild(toast);
+    }
+    
+    // Actualizar contenido y estilo según el tipo
+    toast.textContent = mensaje;
     
     if (tipo === 'success') {
+        toast.style.background = '#2c5530';
+        toast.style.color = 'white';
+    } else if (tipo === 'error') {
+        toast.style.background = '#c62828';
+        toast.style.color = 'white';
+    } else if (tipo === 'saving') {
+        toast.style.background = '#ff9800';
+        toast.style.color = 'white';
+    }
+    
+    // Mostrar toast con animación
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+    
+    // Ocultar después de 3 segundos (solo para success)
+    if (tipo === 'success') {
         setTimeout(() => {
-            status.style.display = 'none';
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) translateY(-100px)';
         }, 3000);
+    } else if (tipo === 'saving') {
+        // Mantener visible mientras guarda
+    } else {
+        // Para errores, mantener visible más tiempo
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) translateY(-100px)';
+        }, 4000);
+    }
+    
+    // También mostrar en el status del formulario
+    const status = document.getElementById('saveStatus');
+    if (status) {
+        status.className = `save-status ${tipo}`;
+        status.textContent = mensaje;
+        status.style.display = 'block';
+        
+        if (tipo === 'success') {
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
     }
 }
 
