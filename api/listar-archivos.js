@@ -33,8 +33,9 @@ export default async function handler(req, res) {
                 
                 // Si no hay URL directa, intentar construirla
                 if (!url && blob.pathname) {
-                    // Construir URL pública de Blob Storage
-                    const storeId = process.env.BLOB_STORE_ID || 'store_1noPrVsRhcvtAmRY';
+                    // Construir URL pública de Blob Storage usando el formato correcto
+                    // El store ID sin "store_" y en minúsculas
+                    const storeId = '1noprvsrhcvtamry'; // De la Base URL que viste en Settings
                     url = `https://${storeId}.public.blob.vercel-storage.com/${blob.pathname}`;
                 }
                 
