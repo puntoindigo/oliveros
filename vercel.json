@@ -40,33 +40,8 @@
       "destination": "/admin/index.html"
     },
     {
-      "source": "/admin/(.*)",
-      "destination": "/admin/$1"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "headers": [
-    {
-      "source": "/admin/(.*\\.(css|js))",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "text/css"
-        }
-      ]
-    },
-    {
-      "source": "/admin/(.*\\.js)",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/javascript"
-        }
-      ]
-    }
   ]
 }
-
