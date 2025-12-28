@@ -56,14 +56,6 @@ export default async function handler(req, res) {
 
         let videos = [];
         
-        if (!YOUTUBE_API_KEY) {
-            return res.status(200).json({
-                configuracionNecesaria: true,
-                mensaje: 'YOUTUBE_API_KEY no está configurada',
-                instrucciones: 'Agrega YOUTUBE_API_KEY como variable de entorno en Vercel'
-            });
-        }
-        
         if (playlistId) {
             // Listar videos de una playlist
             const playlistResponse = await fetch(
