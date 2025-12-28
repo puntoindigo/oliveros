@@ -165,6 +165,24 @@ function seleccionarArchivo(index) {
     
     const videoPlayer = document.getElementById('videoPlayer');
     videoPlayer.style.display = 'block';
+    
+    // Agregar event listeners para debugging
+    videoPlayer.addEventListener('error', (e) => {
+        console.error('❌ Error cargando video:', archivoActual.url);
+        console.error('Error details:', e);
+        console.error('Video error code:', videoPlayer.error?.code);
+        console.error('Video error message:', videoPlayer.error?.message);
+        mostrarEstado('error', `Error cargando video: ${videoPlayer.error?.message || 'No se pudo cargar el video'}`);
+    });
+    
+    videoPlayer.addEventListener('loadstart', () => {
+        console.log('🔄 Iniciando carga del video:', archivoActual.url);
+    });
+    
+    videoPlayer.addEventListener('canplay', () => {
+        console.log('✅ Video listo para reproducir:', archivoActual.url);
+    });
+    
     videoPlayer.src = archivoActual.url;
     videoPlayer.load();
 }
