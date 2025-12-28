@@ -27,6 +27,19 @@ Sitio web profesional one-page para el alquiler de cabañas en Oliveros, Santa F
 
 El sitio está configurado para deploy automático en Vercel. Cada push a `main` activa un nuevo deploy automáticamente.
 
+### Configuración del Admin (Galería de Videos)
+
+Para que el admin pueda guardar cambios en el JSON, necesitas configurar un token de GitHub:
+
+1. Ve a GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. Genera un nuevo token con permisos `repo` (acceso completo a repositorios)
+3. Copia el token
+4. En Vercel → Tu proyecto → Settings → Environment Variables
+5. Agrega: `GITHUB_TOKEN` = [tu token de GitHub]
+6. Haz redeploy del proyecto
+
+Sin este token, el admin podrá leer el JSON pero no podrá guardar cambios.
+
 ## Tecnologías
 
 - HTML5
