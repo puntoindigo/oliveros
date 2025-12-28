@@ -5,9 +5,13 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background: #f5f5f5;
     color: #333;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Playfair Display', serif;
 }
 
 /* Login Styles */
@@ -16,29 +20,70 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.login-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/galeria-1.png');
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+}
+
+.login-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(44, 85, 48, 0.85), rgba(74, 124, 89, 0.85));
+    z-index: 1;
+}
+
+.login-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px 20px;
 }
 
 .login-box {
-    background: white;
-    padding: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 50px 40px;
     border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
+    margin-bottom: 30px;
 }
 
-.login-box h1 {
+.login-title {
     color: #2c5530;
-    margin-bottom: 10px;
-    font-size: 1.5rem;
+    margin-bottom: 8px;
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    font-family: 'Playfair Display', serif;
 }
 
-.login-box h2 {
+.login-subtitle {
     color: #666;
     font-size: 1rem;
     font-weight: 400;
     margin-bottom: 30px;
+    text-align: center;
 }
 
 .form-group {
@@ -94,6 +139,18 @@ body {
 
 .error-message.show {
     display: block;
+}
+
+.login-footer {
+    text-align: center;
+    color: white;
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+.login-footer strong {
+    color: white;
+    font-weight: 600;
 }
 
 /* Admin Nav */
@@ -342,6 +399,31 @@ body {
     color: #856404;
 }
 
+/* Admin Footer */
+.admin-footer {
+    background: #2c5530;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.admin-footer p {
+    margin: 0;
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+.admin-footer strong {
+    color: white;
+    font-weight: 600;
+}
+
 /* Responsive */
 @media (max-width: 968px) {
     .admin-container {
@@ -354,6 +436,14 @@ body {
 
     .editor-content {
         grid-template-columns: 1fr;
+    }
+    
+    .login-box {
+        padding: 40px 30px;
+    }
+    
+    .login-title {
+        font-size: 1.75rem;
     }
 }
 

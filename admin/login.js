@@ -9,21 +9,33 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     const password = document.getElementById('password').value;
     const errorDiv = document.getElementById('loginError');
     
+    // Limpiar error anterior
+    errorDiv.classList.remove('show');
+    errorDiv.textContent = '';
+    
     if (username === ADMIN_USER && password === ADMIN_PASS) {
         // Guardar sesión
         sessionStorage.setItem('adminLoggedIn', 'true');
         sessionStorage.setItem('adminUser', username);
         
-        // Redirigir a galería
-        window.location.href = 'galeria.html';
+        // Redirigir a galería (sin parámetros en URL)
+        window.location.href = 'admin/galeria.html';
     } else {
         errorDiv.textContent = 'Usuario o contraseña incorrectos';
         errorDiv.classList.add('show');
+        
+        // Limpiar campos después de error
+        document.getElementById('password').value = '';
     }
 });
 
 // Verificar si ya está logueado
 if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-    window.location.href = 'galeria.html';
+    window.location.href = 'admin/galeria.html';
+}
+
+// Limpiar URL si tiene parámetros
+if (window.location.search) {
+    window.history.replaceState({}, document.title, window.location.pathname);
 }
 

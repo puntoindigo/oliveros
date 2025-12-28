@@ -4,14 +4,14 @@ const METADATA_FILE = 'galeria-metadata.json';
 
 // Verificar autenticación
 if (sessionStorage.getItem('adminLoggedIn') !== 'true') {
-    window.location.href = 'index.html';
+    window.location.href = 'admin/index.html';
 }
 
 // Logout
 document.getElementById('logoutBtn').addEventListener('click', () => {
     sessionStorage.removeItem('adminLoggedIn');
     sessionStorage.removeItem('adminUser');
-    window.location.href = 'index.html';
+    window.location.href = 'admin/index.html';
 });
 
 // Estado
