@@ -215,7 +215,19 @@ async function cargarArchivos() {
         // Si no hay videos de YouTube, cargar desde Vercel Blob
         const response = await fetch('/api/listar-archivos');
         if (!response.ok) {
-            throw new Error('Error en la respuesta del servidor');
+            const errorData = await response.json().catch(() => ({}));
+            if (response.status === 503) {
+                // Blob Store bloqueado o no disponible
+                document.getElementById('archivosList').innerHTML = 
+                    `<p class="error">
+                        ⚠️ Blob Storage no disponible<br>
+                        ${errorData.detalles || 'El store puede estar bloqueado'}<br><br>
+                        💡 <strong>Solución:</strong> Configura YouTube para los videos<br>
+                        Ver instrucciones en CONFIGURAR_YOUTUBE.md
+                    </p>`;
+                return;
+            }
+            throw new Error(errorData.detalles || 'Error en la respuesta del servidor');
         }
         
         const data = await response.json();
