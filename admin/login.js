@@ -55,8 +55,14 @@ if (loginForm) {
             sessionStorage.setItem('adminLoggedIn', 'true');
             sessionStorage.setItem('adminUser', username);
             
-            // Redirigir a galería (sin parámetros en URL)
-            window.location.href = '/admin/galeria.html';
+            // Detectar si es móvil y redirigir a la versión correspondiente
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            
+            if (isMobile) {
+                window.location.href = '/admin/galeria_mobile.html';
+            } else {
+                window.location.href = '/admin/galeria.html';
+            }
         } else {
             if (errorDiv) {
                 errorDiv.textContent = 'Usuario o contraseña incorrectos';
