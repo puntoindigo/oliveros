@@ -182,9 +182,32 @@ let archivos = [];
 let metadata = {};
 let archivoActual = null;
 
-// Cargar archivos desde Vercel Blob
+// Cargar archivos desde Vercel Blob o YouTube
 async function cargarArchivos() {
     try {
+        // Intentar cargar desde YouTube primero
+        const youtubeResponse = await fetch('/api/youtube-videos?playlistId=TU_PLAYLIST_ID');
+        if (youtubeResponse.ok) {
+            const youtubeData = await youtubeResponse.json();
+            
+            if (youtubeData.videos && youtubeData.videos.length > 0) {
+                // Convertir videos de YouTube al formato esperado
+                archivos = youtubeData.videos.map(video => ({
+                    pathname: `youtube/${video.videoId}`,
+                    url: video.embedUrl,
+                    videoId: video.videoId,
+                    title: video.title,
+                    thumbnail: video.thumbnail,
+                    esYoutube: true
+                }));
+                
+                await cargarMetadata();
+                mostrarArchivos();
+                return;
+            }
+        }
+        
+        // Si no hay videos de YouTube, cargar desde Vercel Blob
         const response = await fetch('/api/listar-archivos');
         if (!response.ok) {
             throw new Error('Error en la respuesta del servidor');
