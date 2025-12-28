@@ -3,5 +3,10 @@
     "titulo": "cabaña 1",
     "comentarios": "electricidad y baño completo",
     "fechaActualizacion": "2025-12-28T17:18:49.259Z"
+  },
+  "videos/cab2.mp4": {
+    "titulo": "cabaña 2",
+    "comentarios": "",
+    "fechaActualizacion": "2025-12-28T22:02:42.202Z"
   }
 }
