@@ -88,13 +88,14 @@ function mostrarArchivos() {
     
     container.innerHTML = archivos.map((archivo, index) => {
         const nombre = archivo.pathname.split('/').pop();
+        const nombreSinExtension = nombre.replace(/\.[^/.]+$/, ''); // Remover extensión
         const tipo = nombre.split('.').pop().toLowerCase();
-        const esVideo = ['mp4', 'mov', 'avi'].includes(tipo);
+        const esVideo = ['mp4', 'mov', 'avi', 'mkv', 'webm'].includes(tipo);
         const meta = metadata[archivo.pathname] || {};
         
         return `
             <div class="archivo-item" data-index="${index}" data-path="${archivo.pathname}">
-                <div class="archivo-item-name">${meta.titulo || nombre}</div>
+                <div class="archivo-item-name">${meta.titulo || nombreSinExtension}</div>
                 <div class="archivo-item-tipo">${esVideo ? 'Video' : 'Imagen'}</div>
             </div>
         `;
@@ -124,8 +125,11 @@ function seleccionarArchivo(index) {
     
     // Cargar datos
     const meta = metadata[archivoActual.pathname] || {};
-    document.getElementById('archivoNombre').textContent = archivoActual.pathname.split('/').pop();
-    document.getElementById('archivoTitulo').value = meta.titulo || '';
+    const nombreArchivo = archivoActual.pathname.split('/').pop();
+    const nombreSinExtension = nombreArchivo.replace(/\.[^/.]+$/, ''); // Remover extensión
+    
+    document.getElementById('archivoNombre').textContent = nombreArchivo;
+    document.getElementById('archivoTitulo').value = meta.titulo || nombreSinExtension;
     document.getElementById('archivoComentarios').value = meta.comentarios || '';
     
     // Cargar media
