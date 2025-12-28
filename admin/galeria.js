@@ -1,5 +1,4 @@
-// Configuración - REEMPLAZA ESTOS VALORES
-const BLOB_STORE_ID = 'store_1noPrVsRhcvtAmRY'; // Tu Store ID de Vercel
+// Configuración
 const METADATA_FILE = 'galeria-metadata.json';
 
 // Verificar autenticación
@@ -17,10 +16,7 @@ if (logoutBtn) {
     });
 }
 
-// Limpiar store - Ver qué archivos ocupan espacio
-const limpiarStoreBtn = document.getElementById('limpiarStoreBtn');
-if (limpiarStoreBtn) {
-    limpiarStoreBtn.addEventListener('click', async () => {
+// Botones de Blob Storage eliminados - ya no se usan
         limpiarStoreBtn.disabled = true;
         limpiarStoreBtn.textContent = 'Analizando...';
 
@@ -130,59 +126,14 @@ if (limpiarStoreBtn) {
     });
 }
 
-// Hacer videos públicos
-const makePublicBtn = document.getElementById('makePublicBtn');
-if (makePublicBtn) {
-    makePublicBtn.addEventListener('click', async () => {
-        if (!confirm('¿Estás seguro de que quieres hacer públicos todos los videos? Esto puede tardar unos minutos.')) {
-            return;
-        }
-
-        makePublicBtn.disabled = true;
-        makePublicBtn.textContent = 'Procesando...';
-
-        try {
-            const response = await fetch('/api/hacer-publicos', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('Error en la respuesta del servidor');
-            }
-
-            const result = await response.json();
-            
-            let mensaje = `Proceso completado:\n`;
-            mensaje += `- Total de archivos: ${result.total}\n`;
-            mensaje += `- Procesados: ${result.procesados}\n`;
-            if (result.errores > 0) {
-                mensaje += `- Errores: ${result.errores}\n`;
-            }
-
-            alert(mensaje);
-
-            // Recargar la lista de archivos
-            await cargarArchivos();
-
-        } catch (error) {
-            console.error('Error haciendo públicos los videos:', error);
-            alert('Error al hacer públicos los videos: ' + error.message);
-        } finally {
-            makePublicBtn.disabled = false;
-            makePublicBtn.textContent = 'Hacer Videos Públicos';
-        }
-    });
-}
+// Botones de Blob Storage eliminados - ya no se usan
 
 // Estado
 let archivos = [];
 let metadata = {};
 let archivoActual = null;
 
-// Cargar archivos desde YouTube (principal) o Vercel Blob (fallback)
+// Cargar archivos desde YouTube
 async function cargarArchivos() {
     try {
         // PRIMERO: Intentar cargar desde YouTube (fuente principal)
@@ -248,13 +199,12 @@ async function cargarArchivos() {
     }
 }
 
-// Cargar metadata (títulos y comentarios)
+// Cargar metadata (títulos y comentarios) desde localStorage
 async function cargarMetadata() {
     try {
-        const response = await fetch('/api/cargar-metadata');
-        if (response.ok) {
-            const data = await response.json();
-            metadata = data.metadata || {};
+        const savedMetadata = localStorage.getItem('galeria-metadata');
+        if (savedMetadata) {
+            metadata = JSON.parse(savedMetadata);
         } else {
             metadata = {};
         }
@@ -264,24 +214,10 @@ async function cargarMetadata() {
     }
 }
 
-// Guardar metadata
+// Guardar metadata en localStorage
 async function guardarMetadata() {
     try {
-        const response = await fetch('/api/guardar-metadata', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(metadata)
-        });
-        
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.error('Error response:', errorData);
-            throw new Error(errorData.details || errorData.error || 'Error guardando metadata');
-        }
-        
-        const result = await response.json();
+        localStorage.setItem('galeria-metadata', JSON.stringify(metadata));
         mostrarEstado('success', 'Cambios guardados correctamente');
     } catch (error) {
         console.error('Error guardando metadata:', error);
@@ -294,21 +230,20 @@ function mostrarArchivos() {
     const container = document.getElementById('archivosList');
     
     if (archivos.length === 0) {
-        container.innerHTML = '<p>No hay archivos disponibles. Sube videos/fotos desde el dashboard de Vercel.</p>';
+        container.innerHTML = '<p>No hay videos disponibles. Agrega videos a tu playlist de YouTube.</p>';
         return;
     }
     
     container.innerHTML = archivos.map((archivo, index) => {
-        const nombre = archivo.pathname.split('/').pop();
-        const nombreSinExtension = nombre.replace(/\.[^/.]+$/, ''); // Remover extensión
-        const tipo = nombre.split('.').pop().toLowerCase();
-        const esVideo = ['mp4', 'mov', 'avi', 'mkv', 'webm'].includes(tipo);
+        // Para YouTube, usar el título del video o el título personalizado
         const meta = metadata[archivo.pathname] || {};
+        const displayTitle = meta.titulo || archivo.title || archivo.pathname.split('/').pop();
+        const tipo = archivo.esYoutube ? 'Video' : (archivo.pathname.split('.').pop().toLowerCase() === 'jpg' || archivo.pathname.split('.').pop().toLowerCase() === 'png' ? 'Imagen' : 'Video');
         
         return `
             <div class="archivo-item" data-index="${index}" data-path="${archivo.pathname}">
-                <div class="archivo-item-name">${meta.titulo || nombreSinExtension}</div>
-                <div class="archivo-item-tipo">${esVideo ? 'Video' : 'Imagen'}</div>
+                <div class="archivo-item-name">${displayTitle}</div>
+                <div class="archivo-item-tipo">${tipo}</div>
             </div>
         `;
     }).join('');
@@ -337,36 +272,50 @@ function seleccionarArchivo(index) {
     
     // Cargar datos
     const meta = metadata[archivoActual.pathname] || {};
-    const nombreArchivo = archivoActual.pathname.split('/').pop();
-    const nombreSinExtension = nombreArchivo.replace(/\.[^/.]+$/, ''); // Remover extensión
+    const displayName = archivoActual.title || archivoActual.pathname.split('/').pop();
+    const nombreSinExtension = displayName.replace(/\.[^/.]+$/, ''); // Remover extensión si tiene
     
-    document.getElementById('archivoNombre').textContent = nombreArchivo;
+    document.getElementById('archivoNombre').textContent = displayName;
     document.getElementById('archivoTitulo').value = meta.titulo || nombreSinExtension;
     document.getElementById('archivoComentarios').value = meta.comentarios || '';
     
-    // Cargar media
-    let url = archivoActual.url;
-    
-    // Si no hay URL directa, construirla desde el pathname
-    if (!url && archivoActual.pathname) {
-        // La URL debería venir del blob, pero si no está, intentamos construirla
-        // Esto es un fallback - normalmente debería venir del API
-        console.warn('No URL found for file, using pathname:', archivoActual.pathname);
-    }
-    
-    const tipo = archivoActual.pathname.split('.').pop().toLowerCase();
-    const esVideo = ['mp4', 'mov', 'avi', 'mkv', 'webm'].includes(tipo);
-    
-    if (esVideo) {
+    // Cargar media - YouTube o archivo normal
+    if (archivoActual.esYoutube && archivoActual.videoId) {
+        // Video de YouTube
         document.getElementById('videoContainer').style.display = 'block';
         document.getElementById('imageContainer').style.display = 'none';
-        const videoPlayer = document.getElementById('videoPlayer');
-        videoPlayer.src = url;
-        videoPlayer.load(); // Recargar el video con la nueva URL
+        document.getElementById('videoPlayer').style.display = 'none';
+        
+        const youtubeContainer = document.getElementById('youtubeContainer');
+        youtubeContainer.innerHTML = `
+            <iframe 
+                width="100%" 
+                height="500" 
+                src="https://www.youtube.com/embed/${archivoActual.videoId}" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+        `;
     } else {
-        document.getElementById('videoContainer').style.display = 'none';
-        document.getElementById('imageContainer').style.display = 'block';
-        document.getElementById('imagePreview').src = url;
+        // Archivo normal (video o imagen)
+        const url = archivoActual.url;
+        const tipo = archivoActual.pathname.split('.').pop().toLowerCase();
+        const esVideo = ['mp4', 'mov', 'avi', 'mkv', 'webm'].includes(tipo);
+        
+        if (esVideo) {
+            document.getElementById('videoContainer').style.display = 'block';
+            document.getElementById('imageContainer').style.display = 'none';
+            document.getElementById('youtubeContainer').innerHTML = '';
+            const videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.style.display = 'block';
+            videoPlayer.src = url;
+            videoPlayer.load();
+        } else {
+            document.getElementById('videoContainer').style.display = 'none';
+            document.getElementById('imageContainer').style.display = 'block';
+            document.getElementById('imagePreview').src = url;
+        }
     }
 }
 
