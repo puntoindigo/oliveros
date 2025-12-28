@@ -12,6 +12,7 @@ export default async function handler(req, res) {
         const blob = await put('galeria-metadata.json', JSON.stringify(metadata, null, 2), {
             access: 'public',
             contentType: 'application/json',
+            addRandomSuffix: false,
         });
 
         return res.status(200).json({ success: true, url: blob.url });
