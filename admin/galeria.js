@@ -247,7 +247,6 @@ async function cargarArchivos() {
         
         await cargarMetadata();
         mostrarArchivos();
-        */
     } catch (error) {
         console.error('Error cargando archivos:', error);
         document.getElementById('archivosList').innerHTML = 
