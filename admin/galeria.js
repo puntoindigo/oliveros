@@ -208,10 +208,15 @@ function seleccionarArchivo(index) {
         console.log('🔄 Iniciando carga del video:', usingApiRoute ? archivoActual.apiUrl : archivoActual.url);
     });
     
-    videoPlayer.addEventListener('canplay', () => {
+    // Remover listeners anteriores para evitar duplicados
+    const canplayHandler = () => {
         console.log('✅ Video listo para reproducir');
         errorShown = false; // Resetear flag si el video se carga correctamente
-    });
+    };
+    
+    // Remover listener anterior si existe
+    videoPlayer.removeEventListener('canplay', canplayHandler);
+    videoPlayer.addEventListener('canplay', canplayHandler, { once: true });
     
     // Intentar primero con la API route directamente (más confiable con Git LFS)
     // Si prefieres intentar primero la ruta directa, cambia el orden
@@ -428,34 +433,55 @@ async function manejarArchivos(files) {
 
 // Subir foto a GitHub
 async function subirFoto(file) {
+    // Verificar tamaño del archivo (máximo 10MB para evitar problemas)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+        throw new Error(`El archivo es demasiado grande (${(file.size / 1024 / 1024).toFixed(2)}MB). El tamaño máximo es 10MB.`);
+    }
+    
     // Convertir archivo a base64
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = async () => {
-            const base64 = reader.result.split(',')[1]; // Remover data:image/...;base64,
-            
-            const response = await fetch('/api/upload-foto', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    file: base64,
-                    fileName: file.name,
-                    fileType: file.type,
-                    archivoPath: archivoActual.pathname
-                })
-            });
-            
-            if (!response.ok) {
-                const errorData = await response.json();
-                reject(new Error(errorData.details || errorData.mensaje || 'Error al subir foto'));
-                return;
+            try {
+                const base64 = reader.result.split(',')[1]; // Remover data:image/...;base64,
+                
+                const response = await fetch('/api/upload-foto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        file: base64,
+                        fileName: file.name,
+                        fileType: file.type,
+                        archivoPath: archivoActual.pathname
+                    })
+                });
+                
+                if (!response.ok) {
+                    // Manejar diferentes tipos de errores
+                    if (response.status === 413) {
+                        throw new Error('El archivo es demasiado grande. Intenta con una imagen más pequeña o comprímela antes de subirla.');
+                    }
+                    
+                    let errorMessage = 'Error al subir foto';
+                    try {
+                        const errorData = await response.json();
+                        errorMessage = errorData.details || errorData.mensaje || errorMessage;
+                    } catch (e) {
+                        // Si no se puede parsear el JSON, usar el status text
+                        errorMessage = `Error ${response.status}: ${response.statusText}`;
+                    }
+                    throw new Error(errorMessage);
+                }
+                
+                resolve(await response.json());
+            } catch (error) {
+                reject(error);
             }
-            
-            resolve(await response.json());
         };
-        reader.onerror = reject;
+        reader.onerror = () => reject(new Error('Error al leer el archivo'));
         reader.readAsDataURL(file);
     });
 }
@@ -649,12 +675,44 @@ window.actualizarComentarioFoto = function(index, comentario) {
     }
 };
 
+// Mostrar modal de confirmación
+function mostrarConfirmacion(mensaje, titulo = 'Confirmar') {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('confirmModal');
+        const title = document.getElementById('confirmModalTitle');
+        const message = document.getElementById('confirmModalMessage');
+        const btnCancel = document.getElementById('confirmModalCancel');
+        const btnOk = document.getElementById('confirmModalOk');
+        
+        title.textContent = titulo;
+        message.textContent = mensaje;
+        modal.style.display = 'flex';
+        
+        const cleanup = () => {
+            modal.style.display = 'none';
+            btnCancel.onclick = null;
+            btnOk.onclick = null;
+        };
+        
+        btnCancel.onclick = () => {
+            cleanup();
+            resolve(false);
+        };
+        
+        btnOk.onclick = () => {
+            cleanup();
+            resolve(true);
+        };
+    });
+}
+
 // Eliminar foto
 window.eliminarFoto = async function(index) {
-    if (!confirm('¿Estás seguro de eliminar esta foto?')) return;
-    
     const foto = fotosSubidas[index];
     if (!foto) return;
+    
+    const confirmado = await mostrarConfirmacion('¿Estás seguro de eliminar esta foto?', 'Eliminar foto');
+    if (!confirmado) return;
     
     try {
         // Eliminar del servidor
