@@ -34,6 +34,7 @@ if (logoutBtn) {
 let archivos = [];
 let metadata = {};
 let archivoActual = null;
+let fotosSubidas = []; // Array de fotos subidas para el archivo actual
 
 // Cargar archivos locales estáticos
 async function cargarArchivos() {
@@ -161,6 +162,10 @@ function seleccionarArchivo(index) {
     document.getElementById('archivoTitulo').value = meta.titulo || nombreSinExtension;
     document.getElementById('archivoComentarios').value = meta.comentarios || '';
     
+    // Cargar fotos
+    fotosSubidas = meta.fotos || [];
+    mostrarFotos();
+    
     // Cargar video
     document.getElementById('videoContainer').style.display = 'block';
     document.getElementById('imageContainer').style.display = 'none';
@@ -226,6 +231,7 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
     metadata[archivoActual.pathname] = {
         titulo: tituloFinal,
         comentarios,
+        fotos: fotosSubidas,
         fechaActualizacion: new Date().toISOString()
     };
     
@@ -310,5 +316,198 @@ function mostrarEstado(tipo, mensaje) {
     }
 }
 
+// Inicializar drag & drop para fotos
+function inicializarDragDrop() {
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    
+    if (!dropZone || !fileInput) return;
+    
+    // Click en drop zone
+    dropZone.addEventListener('click', () => {
+        fileInput.click();
+    });
+    
+    // Selección de archivos
+    fileInput.addEventListener('change', (e) => {
+        manejarArchivos(e.target.files);
+    });
+    
+    // Drag over
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    });
+    
+    // Drag leave
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('dragover');
+    });
+    
+    // Drop
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        manejarArchivos(e.dataTransfer.files);
+    });
+}
+
+// Manejar archivos seleccionados/arrastrados
+async function manejarArchivos(files) {
+    const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+    
+    if (imageFiles.length === 0) {
+        mostrarEstado('error', 'Por favor selecciona solo archivos de imagen');
+        return;
+    }
+    
+    mostrarEstado('saving', `Subiendo ${imageFiles.length} foto(s)...`);
+    
+    for (const file of imageFiles) {
+        try {
+            const fotoData = await subirFoto(file);
+            fotosSubidas.push({
+                id: Date.now() + Math.random(),
+                nombre: file.name,
+                url: fotoData.url,
+                path: fotoData.path,
+                comentario: '',
+                fechaSubida: new Date().toISOString()
+            });
+        } catch (error) {
+            console.error('Error subiendo foto:', error);
+            mostrarEstado('error', `Error subiendo ${file.name}: ${error.message}`);
+        }
+    }
+    
+    mostrarFotos();
+    mostrarEstado('success', `${imageFiles.length} foto(s) subida(s) correctamente`);
+    
+    // Guardar automáticamente después de subir
+    if (archivoActual) {
+        metadata[archivoActual.pathname] = {
+            ...metadata[archivoActual.pathname],
+            fotos: fotosSubidas
+        };
+        await guardarMetadata();
+    }
+}
+
+// Subir foto a GitHub
+async function subirFoto(file) {
+    // Convertir archivo a base64
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = async () => {
+            const base64 = reader.result.split(',')[1]; // Remover data:image/...;base64,
+            
+            const response = await fetch('/api/upload-foto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    file: base64,
+                    fileName: file.name,
+                    fileType: file.type,
+                    archivoPath: archivoActual.pathname
+                })
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                reject(new Error(errorData.details || errorData.mensaje || 'Error al subir foto'));
+                return;
+            }
+            
+            resolve(await response.json());
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+// Mostrar fotos en la lista
+function mostrarFotos() {
+    const fotosList = document.getElementById('fotosList');
+    if (!fotosList) return;
+    
+    if (fotosSubidas.length === 0) {
+        fotosList.innerHTML = '';
+        return;
+    }
+    
+    fotosList.innerHTML = fotosSubidas.map((foto, index) => `
+        <div class="foto-item" data-index="${index}">
+            <div class="foto-preview">
+                <img src="${foto.url}" alt="${foto.nombre}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
+                <button class="btn-delete-foto" onclick="eliminarFoto(${index})" title="Eliminar foto">×</button>
+            </div>
+            <div class="foto-info">
+                <p class="foto-nombre">${foto.nombre}</p>
+                <textarea 
+                    class="foto-comentario" 
+                    placeholder="Comentario sobre esta foto..."
+                    onchange="actualizarComentarioFoto(${index}, this.value)"
+                >${foto.comentario || ''}</textarea>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Actualizar comentario de una foto
+window.actualizarComentarioFoto = function(index, comentario) {
+    if (fotosSubidas[index]) {
+        fotosSubidas[index].comentario = comentario;
+        if (archivoActual) {
+            metadata[archivoActual.pathname] = {
+                ...metadata[archivoActual.pathname],
+                fotos: fotosSubidas
+            };
+        }
+    }
+};
+
+// Eliminar foto
+window.eliminarFoto = async function(index) {
+    if (!confirm('¿Estás seguro de eliminar esta foto?')) return;
+    
+    const foto = fotosSubidas[index];
+    if (!foto) return;
+    
+    try {
+        // Eliminar del servidor
+        const response = await fetch('/api/delete-foto', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ path: foto.path })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al eliminar foto del servidor');
+        }
+        
+        // Eliminar del array local
+        fotosSubidas.splice(index, 1);
+        mostrarFotos();
+        
+        // Guardar cambios
+        if (archivoActual) {
+            metadata[archivoActual.pathname] = {
+                ...metadata[archivoActual.pathname],
+                fotos: fotosSubidas
+            };
+            await guardarMetadata();
+            mostrarEstado('success', 'Foto eliminada correctamente');
+        }
+    } catch (error) {
+        console.error('Error eliminando foto:', error);
+        mostrarEstado('error', `Error al eliminar foto: ${error.message}`);
+    }
+};
+
 // Inicializar
 cargarArchivos();
+inicializarDragDrop();

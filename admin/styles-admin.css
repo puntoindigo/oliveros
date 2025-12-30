@@ -439,6 +439,144 @@ h1, h2, h3, h4 {
     color: #856404;
 }
 
+/* Drop Zone para Fotos */
+.drop-zone {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #fafafa;
+}
+
+.drop-zone:hover {
+    border-color: #2c5530;
+    background: #f5f5f5;
+}
+
+.drop-zone.dragover {
+    border-color: #2c5530;
+    background: #e8f5e9;
+    border-style: solid;
+}
+
+.drop-zone-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: #666;
+}
+
+.drop-zone-content svg {
+    color: #2c5530;
+    opacity: 0.6;
+}
+
+.drop-zone-content p {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.drop-zone-hint {
+    font-size: 0.875rem !important;
+    color: #999 !important;
+}
+
+/* Lista de Fotos */
+.fotos-list {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.foto-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s;
+}
+
+.foto-item:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.foto-preview {
+    position: relative;
+    width: 100%;
+    padding-top: 75%; /* Aspect ratio 4:3 */
+    background: #f5f5f5;
+    overflow: hidden;
+}
+
+.foto-preview img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-delete-foto {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(198, 40, 40, 0.9);
+    color: white;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.foto-item:hover .btn-delete-foto {
+    opacity: 1;
+}
+
+.btn-delete-foto:hover {
+    background: rgba(198, 40, 40, 1);
+}
+
+.foto-info {
+    padding: 12px;
+}
+
+.foto-nombre {
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 8px;
+    word-break: break-all;
+}
+
+.foto-comentario {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 60px;
+}
+
+.foto-comentario:focus {
+    outline: none;
+    border-color: #2c5530;
+}
+
 /* Admin Footer */
 .admin-footer {
     background: #2c5530;
