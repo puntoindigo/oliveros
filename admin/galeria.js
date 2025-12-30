@@ -696,56 +696,76 @@ function inicializarCaptura() {
         }
         
         try {
+            // Verificar que el video tenga dimensiones válidas
+            if (videoPlayer.videoWidth === 0 || videoPlayer.videoHeight === 0) {
+                mostrarEstado('error', 'El video aún no tiene dimensiones válidas. Espera un momento.');
+                return;
+            }
+            
             // Configurar canvas con las dimensiones del video
             videoCanvas.width = videoPlayer.videoWidth;
             videoCanvas.height = videoPlayer.videoHeight;
             
             // Dibujar frame actual del video en el canvas
             const ctx = videoCanvas.getContext('2d');
-            ctx.drawImage(videoPlayer, 0, 0, videoCanvas.width, videoCanvas.height);
             
-            // Convertir canvas a blob
-            videoCanvas.toBlob(async (blob) => {
-                if (!blob) {
-                    mostrarEstado('error', 'Error al capturar el video');
-                    return;
-                }
-                
-                // Crear un File desde el blob
-                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-                const fileName = `captura_${archivoActual.nombreSinExtension}_${timestamp}.png`;
-                const file = new File([blob], fileName, { type: 'image/png' });
-                
-                mostrarEstado('saving', 'Guardando captura...');
-                
-                // Subir como foto nueva
-                try {
-                    const fotoData = await subirFoto(file);
-                    fotosSubidas.push({
-                        id: Date.now() + Math.random(),
-                        nombre: fileName,
-                        url: fotoData.url,
-                        path: fotoData.path,
-                        comentario: `Captura del video ${archivoActual.filename} en ${new Date().toLocaleString('es-AR')}`,
-                        fechaSubida: new Date().toISOString()
-                    });
-                    
-                    // Actualizar metadata y guardar
-                    if (archivoActual) {
-                        metadata[archivoActual.pathname] = {
-                            ...metadata[archivoActual.pathname],
-                            fotos: fotosSubidas
-                        };
-                        await guardarMetadata();
+            // Intentar capturar el frame
+            try {
+                ctx.drawImage(videoPlayer, 0, 0, videoCanvas.width, videoCanvas.height);
+            } catch (drawError) {
+                console.error('Error dibujando en canvas:', drawError);
+                mostrarEstado('error', 'No se pudo capturar el frame. El video puede tener restricciones CORS.');
+                return;
+            }
+            
+            // Convertir canvas a blob con manejo de errores CORS
+            try {
+                videoCanvas.toBlob(async (blob) => {
+                    if (!blob) {
+                        mostrarEstado('error', 'Error al convertir la captura a imagen');
+                        return;
                     }
                     
-                    mostrarFotos();
-                    mostrarEstado('success', 'Captura guardada correctamente');
-                } catch (error) {
-                    console.error('Error subiendo captura:', error);
-                    mostrarEstado('error', `Error al guardar captura: ${error.message}`);
-                }
-            }, 'image/png');
+                    // Crear un File desde el blob
+                    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                    const fileName = `captura_${archivoActual.nombreSinExtension}_${timestamp}.png`;
+                    const file = new File([blob], fileName, { type: 'image/png' });
+                    
+                    mostrarEstado('saving', 'Guardando captura...');
+                    
+                    // Subir como foto nueva
+                    try {
+                        const fotoData = await subirFoto(file);
+                        fotosSubidas.push({
+                            id: Date.now() + Math.random(),
+                            nombre: fileName,
+                            url: fotoData.url,
+                            path: fotoData.path,
+                            comentario: `Captura del video ${archivoActual.filename} en ${new Date().toLocaleString('es-AR')}`,
+                            fechaSubida: new Date().toISOString()
+                        });
+                        
+                        // Actualizar metadata y guardar
+                        if (archivoActual) {
+                            metadata[archivoActual.pathname] = {
+                                ...metadata[archivoActual.pathname],
+                                fotos: fotosSubidas
+                            };
+                            await guardarMetadata();
+                        }
+                        
+                        mostrarFotos();
+                        mostrarEstado('success', 'Captura guardada correctamente');
+                    } catch (error) {
+                        console.error('Error subiendo captura:', error);
+                        mostrarEstado('error', `Error al guardar captura: ${error.message}`);
+                    }
+                }, 'image/png');
+            } catch (blobError) {
+                console.error('Error convirtiendo canvas a blob:', blobError);
+                // Si falla por CORS, intentar usar un método alternativo
+                mostrarEstado('error', 'Error de seguridad CORS. El video debe servirse desde el mismo origen.');
+            }
         } catch (error) {
             console.error('Error capturando video:', error);
             mostrarEstado('error', `Error al capturar: ${error.message}`);

@@ -1,5 +1,15 @@
 // API route para servir videos desde GitHub LFS
 export default async function handler(req, res) {
+    // Habilitar CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Range');
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Range, Content-Length, Accept-Ranges');
+
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+
     const { filename } = req.query;
 
     if (!filename) {
@@ -45,8 +55,17 @@ export default async function handler(req, res) {
                 
                 // Si el archivo está en Git LFS, el content será null y habrá un download_url
                 if (fileData.download_url) {
-                    // Redirigir al download_url de GitHub LFS
-                    return res.redirect(fileData.download_url);
+                    // En lugar de redirigir, hacer proxy del video para evitar problemas CORS
+                    const videoResponse = await fetch(fileData.download_url);
+                    if (videoResponse.ok) {
+                        const videoBuffer = Buffer.from(await videoResponse.arrayBuffer());
+                        res.setHeader('Content-Type', 'video/mp4');
+                        res.setHeader('Content-Length', videoBuffer.length);
+                        res.setHeader('Accept-Ranges', 'bytes');
+                        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+                        res.setHeader('Access-Control-Allow-Origin', '*');
+                        return res.send(videoBuffer);
+                    }
                 }
                 
                 // Si no es LFS, decodificar el contenido base64
@@ -56,6 +75,7 @@ export default async function handler(req, res) {
                     res.setHeader('Content-Length', videoBuffer.length);
                     res.setHeader('Accept-Ranges', 'bytes');
                     res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+                    res.setHeader('Access-Control-Allow-Origin', '*');
                     return res.send(videoBuffer);
                 }
             }
@@ -74,6 +94,7 @@ export default async function handler(req, res) {
                 res.setHeader('Content-Length', videoBuffer.length);
                 res.setHeader('Accept-Ranges', 'bytes');
                 res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+                res.setHeader('Access-Control-Allow-Origin', '*');
                 return res.send(videoBuffer);
             }
         } catch (fsError) {
