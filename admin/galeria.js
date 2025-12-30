@@ -225,6 +225,15 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
     const titulo = document.getElementById('archivoTitulo').value.trim();
     const comentarios = document.getElementById('archivoComentarios').value.trim();
     
+    // Actualizar comentarios de fotos desde los textareas
+    const fotoItems = document.querySelectorAll('.foto-item');
+    fotoItems.forEach((item, index) => {
+        const textarea = item.querySelector('.foto-comentario');
+        if (textarea && fotosSubidas[index]) {
+            fotosSubidas[index].comentario = textarea.value.trim();
+        }
+    });
+    
     const nombreSinExtension = archivoActual.nombreSinExtension;
     const tituloFinal = titulo || nombreSinExtension;
     
