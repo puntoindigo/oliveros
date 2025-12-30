@@ -163,7 +163,8 @@ function seleccionarArchivo(index) {
     document.getElementById('archivoComentarios').value = meta.comentarios || '';
     
     // Cargar fotos
-    fotosSubidas = meta.fotos || [];
+    fotosSubidas = Array.isArray(meta.fotos) ? meta.fotos : [];
+    console.log('📸 Fotos cargadas para', archivoActual.pathname, ':', fotosSubidas.length);
     mostrarFotos();
     
     // Cargar video
@@ -330,7 +331,12 @@ function inicializarDragDrop() {
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
     
-    if (!dropZone || !fileInput) return;
+    if (!dropZone || !fileInput) {
+        console.warn('⚠️ Drop zone o file input no encontrados');
+        return;
+    }
+    
+    console.log('✅ Drag & drop inicializado');
     
     // Click en drop zone
     dropZone.addEventListener('click', () => {
@@ -545,6 +551,13 @@ window.eliminarFoto = async function(index) {
     }
 };
 
-// Inicializar
-cargarArchivos();
-inicializarDragDrop();
+// Inicializar cuando el DOM esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        cargarArchivos();
+        inicializarDragDrop();
+    });
+} else {
+    cargarArchivos();
+    inicializarDragDrop();
+}
