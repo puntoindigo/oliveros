@@ -35,6 +35,7 @@ let archivos = [];
 let metadata = {};
 let archivoActual = null;
 let fotosSubidas = []; // Array de fotos subidas para el archivo actual
+let layoutActual = 'small'; // Layout por defecto: small, list, large
 
 // Cargar archivos locales estáticos
 async function cargarArchivos() {
@@ -459,7 +460,7 @@ async function subirFoto(file) {
     });
 }
 
-// Mostrar fotos en la lista
+// Mostrar fotos en la lista según el layout actual
 function mostrarFotos() {
     const fotosList = document.getElementById('fotosList');
     if (!fotosList) {
@@ -467,35 +468,155 @@ function mostrarFotos() {
         return;
     }
     
-    console.log('🖼️ Mostrando fotos:', fotosSubidas.length);
+    console.log('🖼️ Mostrando fotos:', fotosSubidas.length, 'Layout:', layoutActual);
+    
+    // Actualizar clase del contenedor según el layout
+    fotosList.className = `fotos-list fotos-layout-${layoutActual}`;
     
     if (fotosSubidas.length === 0) {
         fotosList.innerHTML = '';
         return;
     }
     
-    fotosList.innerHTML = fotosSubidas.map((foto, index) => {
-        const comentarioEscapado = (foto.comentario || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-        return `
-        <div class="foto-item" data-index="${index}">
-            <div class="foto-preview">
-                <img src="${foto.url}" alt="${foto.nombre}" onerror="console.error('Error cargando imagen:', '${foto.url}'); this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
-                <button class="btn-delete-foto" onclick="eliminarFoto(${index})" title="Eliminar foto">×</button>
+    if (layoutActual === 'small') {
+        // Layout pequeño: fotos chicas con descripción acotada y posibilidad de ampliar
+        fotosList.innerHTML = fotosSubidas.map((foto, index) => {
+            const comentarioEscapado = (foto.comentario || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            const comentarioPreview = (foto.comentario || '').substring(0, 50) + ((foto.comentario || '').length > 50 ? '...' : '');
+            return `
+            <div class="foto-item foto-item-small" data-index="${index}">
+                <div class="foto-preview-small" onclick="ampliarFoto(${index})">
+                    <img src="${foto.url}" alt="${foto.nombre}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
+                    <button class="btn-delete-foto" onclick="event.stopPropagation(); eliminarFoto(${index})" title="Eliminar foto">×</button>
+                </div>
+                <div class="foto-info-small">
+                    <p class="foto-nombre-small" title="${foto.nombre}">${foto.nombre.length > 20 ? foto.nombre.substring(0, 20) + '...' : foto.nombre}</p>
+                    <p class="foto-comentario-preview">${comentarioPreview || 'Sin comentario'}</p>
+                    <textarea 
+                        class="foto-comentario-small" 
+                        placeholder="Comentario..."
+                        oninput="actualizarComentarioFoto(${index}, this.value)"
+                        onclick="event.stopPropagation()"
+                    >${comentarioEscapado}</textarea>
+                </div>
             </div>
-            <div class="foto-info">
-                <p class="foto-nombre">${foto.nombre}</p>
-                <textarea 
-                    class="foto-comentario" 
-                    placeholder="Comentario sobre esta foto..."
-                    oninput="actualizarComentarioFoto(${index}, this.value)"
-                >${comentarioEscapado}</textarea>
+        `;
+        }).join('');
+    } else if (layoutActual === 'list') {
+        // Layout lista: tipo Windows
+        fotosList.innerHTML = fotosSubidas.map((foto, index) => {
+            const comentarioEscapado = (foto.comentario || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            return `
+            <div class="foto-item foto-item-list" data-index="${index}">
+                <div class="foto-preview-list">
+                    <img src="${foto.url}" alt="${foto.nombre}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
+                </div>
+                <div class="foto-info-list">
+                    <div class="foto-header-list">
+                        <p class="foto-nombre-list">${foto.nombre}</p>
+                        <button class="btn-delete-foto-list" onclick="eliminarFoto(${index})" title="Eliminar foto">×</button>
+                    </div>
+                    <textarea 
+                        class="foto-comentario-list" 
+                        placeholder="Comentario sobre esta foto..."
+                        oninput="actualizarComentarioFoto(${index}, this.value)"
+                    >${comentarioEscapado}</textarea>
+                </div>
             </div>
-        </div>
-    `;
-    }).join('');
+        `;
+        }).join('');
+    } else {
+        // Layout grande: como estaba antes
+        fotosList.innerHTML = fotosSubidas.map((foto, index) => {
+            const comentarioEscapado = (foto.comentario || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            return `
+            <div class="foto-item foto-item-large" data-index="${index}">
+                <div class="foto-preview">
+                    <img src="${foto.url}" alt="${foto.nombre}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
+                    <button class="btn-delete-foto" onclick="eliminarFoto(${index})" title="Eliminar foto">×</button>
+                </div>
+                <div class="foto-info">
+                    <p class="foto-nombre">${foto.nombre}</p>
+                    <textarea 
+                        class="foto-comentario" 
+                        placeholder="Comentario sobre esta foto..."
+                        oninput="actualizarComentarioFoto(${index}, this.value)"
+                    >${comentarioEscapado}</textarea>
+                </div>
+            </div>
+        `;
+        }).join('');
+    }
     
     console.log('✅ Fotos renderizadas en el DOM');
 }
+
+// Cambiar layout
+function cambiarLayout(layout) {
+    layoutActual = layout;
+    
+    // Actualizar botones activos
+    document.querySelectorAll('.layout-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.layout === layout);
+    });
+    
+    // Re-renderizar fotos
+    mostrarFotos();
+}
+
+// Ampliar foto (modal)
+window.ampliarFoto = function(index) {
+    const foto = fotosSubidas[index];
+    if (!foto) return;
+    
+    // Crear modal si no existe
+    let modal = document.getElementById('fotoModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'fotoModal';
+        modal.className = 'foto-modal';
+        modal.innerHTML = `
+            <div class="foto-modal-content">
+                <button class="foto-modal-close" onclick="cerrarFotoModal()">×</button>
+                <img id="fotoModalImg" src="" alt="">
+                <div class="foto-modal-info">
+                    <p id="fotoModalNombre"></p>
+                    <textarea id="fotoModalComentario" placeholder="Comentario..." oninput="actualizarComentarioFotoDesdeModal()"></textarea>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    
+    // Llenar modal
+    document.getElementById('fotoModalImg').src = foto.url;
+    document.getElementById('fotoModalNombre').textContent = foto.nombre;
+    document.getElementById('fotoModalComentario').value = foto.comentario || '';
+    modal.dataset.index = index;
+    modal.style.display = 'flex';
+};
+
+window.cerrarFotoModal = function() {
+    const modal = document.getElementById('fotoModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+};
+
+window.actualizarComentarioFotoDesdeModal = function() {
+    const modal = document.getElementById('fotoModal');
+    if (!modal) return;
+    const index = parseInt(modal.dataset.index);
+    const comentario = document.getElementById('fotoModalComentario').value;
+    actualizarComentarioFoto(index, comentario);
+};
+
+// Cerrar modal con ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        cerrarFotoModal();
+    }
+});
 
 // Actualizar comentario de una foto
 window.actualizarComentarioFoto = function(index, comentario) {
@@ -551,13 +672,98 @@ window.eliminarFoto = async function(index) {
     }
 };
 
+// Inicializar botones de layout
+function inicializarLayoutButtons() {
+    document.querySelectorAll('.layout-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            cambiarLayout(btn.dataset.layout);
+        });
+    });
+}
+
+// Inicializar botón de captura
+function inicializarCaptura() {
+    const captureBtn = document.getElementById('captureBtn');
+    const videoPlayer = document.getElementById('videoPlayer');
+    const videoCanvas = document.getElementById('videoCanvas');
+    
+    if (!captureBtn || !videoPlayer || !videoCanvas) return;
+    
+    captureBtn.addEventListener('click', async () => {
+        if (videoPlayer.readyState < 2) {
+            mostrarEstado('error', 'Espera a que el video se cargue completamente');
+            return;
+        }
+        
+        try {
+            // Configurar canvas con las dimensiones del video
+            videoCanvas.width = videoPlayer.videoWidth;
+            videoCanvas.height = videoPlayer.videoHeight;
+            
+            // Dibujar frame actual del video en el canvas
+            const ctx = videoCanvas.getContext('2d');
+            ctx.drawImage(videoPlayer, 0, 0, videoCanvas.width, videoCanvas.height);
+            
+            // Convertir canvas a blob
+            videoCanvas.toBlob(async (blob) => {
+                if (!blob) {
+                    mostrarEstado('error', 'Error al capturar el video');
+                    return;
+                }
+                
+                // Crear un File desde el blob
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                const fileName = `captura_${archivoActual.nombreSinExtension}_${timestamp}.png`;
+                const file = new File([blob], fileName, { type: 'image/png' });
+                
+                mostrarEstado('saving', 'Guardando captura...');
+                
+                // Subir como foto nueva
+                try {
+                    const fotoData = await subirFoto(file);
+                    fotosSubidas.push({
+                        id: Date.now() + Math.random(),
+                        nombre: fileName,
+                        url: fotoData.url,
+                        path: fotoData.path,
+                        comentario: `Captura del video ${archivoActual.filename} en ${new Date().toLocaleString('es-AR')}`,
+                        fechaSubida: new Date().toISOString()
+                    });
+                    
+                    // Actualizar metadata y guardar
+                    if (archivoActual) {
+                        metadata[archivoActual.pathname] = {
+                            ...metadata[archivoActual.pathname],
+                            fotos: fotosSubidas
+                        };
+                        await guardarMetadata();
+                    }
+                    
+                    mostrarFotos();
+                    mostrarEstado('success', 'Captura guardada correctamente');
+                } catch (error) {
+                    console.error('Error subiendo captura:', error);
+                    mostrarEstado('error', `Error al guardar captura: ${error.message}`);
+                }
+            }, 'image/png');
+        } catch (error) {
+            console.error('Error capturando video:', error);
+            mostrarEstado('error', `Error al capturar: ${error.message}`);
+        }
+    });
+}
+
 // Inicializar cuando el DOM esté listo
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         cargarArchivos();
         inicializarDragDrop();
+        inicializarLayoutButtons();
+        inicializarCaptura();
     });
 } else {
     cargarArchivos();
     inicializarDragDrop();
+    inicializarLayoutButtons();
+    inicializarCaptura();
 }

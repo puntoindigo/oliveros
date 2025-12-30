@@ -51,7 +51,34 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Fotos</label>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <label style="margin-bottom: 0;">Fotos</label>
+                                <div class="layout-buttons">
+                                    <button class="layout-btn active" data-layout="small" title="Vista pequeña">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="3" width="7" height="7"></rect>
+                                            <rect x="14" y="3" width="7" height="7"></rect>
+                                            <rect x="3" y="14" width="7" height="7"></rect>
+                                            <rect x="14" y="14" width="7" height="7"></rect>
+                                        </svg>
+                                    </button>
+                                    <button class="layout-btn" data-layout="list" title="Vista lista">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <line x1="8" y1="6" x2="21" y2="6"></line>
+                                            <line x1="8" y1="12" x2="21" y2="12"></line>
+                                            <line x1="8" y1="18" x2="21" y2="18"></line>
+                                            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                    <button class="layout-btn" data-layout="large" title="Vista grande">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="3" width="18" height="18"></rect>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
                             <div id="dropZone" class="drop-zone">
                                 <div class="drop-zone-content">
                                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -64,15 +91,29 @@
                                     <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
                                 </div>
                             </div>
-                            <div id="fotosList" class="fotos-list"></div>
+                            <div id="fotosList" class="fotos-list fotos-layout-small"></div>
                         </div>
                     </div>
 
                     <div class="media-preview">
-                        <div id="videoContainer" style="display: none;">
+                        <div id="videoContainer" style="display: none; position: relative;">
+                            <button id="captureBtn" class="btn-capture" title="Tomar captura del video">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                                    <line x1="7" y1="2" x2="7" y2="22"></line>
+                                    <line x1="17" y1="2" x2="17" y2="22"></line>
+                                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                                    <line x1="2" y1="7" x2="7" y2="7"></line>
+                                    <line x1="2" y1="17" x2="7" y2="17"></line>
+                                    <line x1="17" y1="17" x2="22" y2="17"></line>
+                                    <line x1="17" y1="7" x2="22" y2="7"></line>
+                                </svg>
+                                Capturar
+                            </button>
                             <video id="videoPlayer" controls preload="metadata" style="display: none;">
                                 Tu navegador no soporta la reproducción de video.
                             </video>
+                            <canvas id="videoCanvas" style="display: none;"></canvas>
                         </div>
                         <div id="imageContainer" style="display: none;">
                             <img id="imagePreview" src="" alt="Preview">
