@@ -316,20 +316,6 @@ function mostrarEstado(tipo, mensaje) {
             toast.style.transform = 'translateX(-50%) translateY(-100px)';
         }, 4000);
     }
-    
-    // También mostrar en el status del formulario
-    const status = document.getElementById('saveStatus');
-    if (status) {
-        status.className = `save-status ${tipo}`;
-        status.textContent = mensaje;
-        status.style.display = 'block';
-        
-        if (tipo === 'success') {
-            setTimeout(() => {
-                status.style.display = 'none';
-            }, 3000);
-        }
-    }
 }
 
 // Inicializar drag & drop para fotos
@@ -530,7 +516,7 @@ function mostrarFotos() {
                 </div>
                 <div class="foto-info-small">
                     <p class="foto-nombre-small" title="${nombreLegible}">${nombreLegible.length > 20 ? nombreLegible.substring(0, 20) + '...' : nombreLegible}</p>
-                    <p class="foto-comentario-preview">${comentarioPreview || 'Sin notas'}</p>
+                    ${comentarioPreview ? `<p class="foto-comentario-preview">${comentarioPreview}</p>` : ''}
                     <textarea 
                         class="foto-comentario-small" 
                         placeholder="Notas"

@@ -582,8 +582,8 @@ h1, h2, h3, h4 {
     font-size: 0.7rem;
     font-family: inherit;
     resize: vertical;
-    min-height: 40px;
-    max-height: 80px;
+    min-height: 20px;
+    max-height: 40px;
 }
 
 .foto-comentario-small:focus {
@@ -674,7 +674,7 @@ h1, h2, h3, h4 {
     font-size: 0.875rem;
     font-family: inherit;
     resize: vertical;
-    min-height: 50px;
+    min-height: 25px;
     background: #fafafa;
     transition: all 0.2s;
 }
@@ -768,7 +768,7 @@ h1, h2, h3, h4 {
     font-size: 0.875rem;
     font-family: inherit;
     resize: vertical;
-    min-height: 60px;
+    min-height: 30px;
 }
 
 .foto-comentario:focus {
