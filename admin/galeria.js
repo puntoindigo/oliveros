@@ -363,6 +363,11 @@ function inicializarDragDrop() {
 
 // Manejar archivos seleccionados/arrastrados
 async function manejarArchivos(files) {
+    if (!archivoActual) {
+        mostrarEstado('error', 'Por favor selecciona un archivo primero');
+        return;
+    }
+    
     const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
     
     if (imageFiles.length === 0) {
@@ -372,9 +377,14 @@ async function manejarArchivos(files) {
     
     mostrarEstado('saving', `Subiendo ${imageFiles.length} foto(s)...`);
     
+    const fotosSubidasAntes = fotosSubidas.length;
+    
     for (const file of imageFiles) {
         try {
+            console.log('📤 Subiendo foto:', file.name);
             const fotoData = await subirFoto(file);
+            console.log('✅ Foto subida:', fotoData);
+            
             fotosSubidas.push({
                 id: Date.now() + Math.random(),
                 nombre: file.name,
@@ -384,21 +394,28 @@ async function manejarArchivos(files) {
                 fechaSubida: new Date().toISOString()
             });
         } catch (error) {
-            console.error('Error subiendo foto:', error);
+            console.error('❌ Error subiendo foto:', error);
             mostrarEstado('error', `Error subiendo ${file.name}: ${error.message}`);
         }
     }
     
-    mostrarFotos();
-    mostrarEstado('success', `${imageFiles.length} foto(s) subida(s) correctamente`);
+    console.log('📸 Fotos subidas:', fotosSubidas.length, 'Total antes:', fotosSubidasAntes);
     
-    // Guardar automáticamente después de subir
+    // Actualizar metadata
     if (archivoActual) {
         metadata[archivoActual.pathname] = {
             ...metadata[archivoActual.pathname],
             fotos: fotosSubidas
         };
+    }
+    
+    // Mostrar fotos
+    mostrarFotos();
+    
+    // Guardar automáticamente después de subir
+    if (archivoActual && fotosSubidas.length > fotosSubidasAntes) {
         await guardarMetadata();
+        mostrarEstado('success', `${imageFiles.length} foto(s) subida(s) correctamente`);
     }
 }
 
@@ -439,17 +456,24 @@ async function subirFoto(file) {
 // Mostrar fotos en la lista
 function mostrarFotos() {
     const fotosList = document.getElementById('fotosList');
-    if (!fotosList) return;
+    if (!fotosList) {
+        console.error('❌ No se encontró el contenedor fotosList');
+        return;
+    }
+    
+    console.log('🖼️ Mostrando fotos:', fotosSubidas.length);
     
     if (fotosSubidas.length === 0) {
         fotosList.innerHTML = '';
         return;
     }
     
-    fotosList.innerHTML = fotosSubidas.map((foto, index) => `
+    fotosList.innerHTML = fotosSubidas.map((foto, index) => {
+        const comentarioEscapado = (foto.comentario || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        return `
         <div class="foto-item" data-index="${index}">
             <div class="foto-preview">
-                <img src="${foto.url}" alt="${foto.nombre}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
+                <img src="${foto.url}" alt="${foto.nombre}" onerror="console.error('Error cargando imagen:', '${foto.url}'); this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
                 <button class="btn-delete-foto" onclick="eliminarFoto(${index})" title="Eliminar foto">×</button>
             </div>
             <div class="foto-info">
@@ -457,15 +481,19 @@ function mostrarFotos() {
                 <textarea 
                     class="foto-comentario" 
                     placeholder="Comentario sobre esta foto..."
-                    onchange="actualizarComentarioFoto(${index}, this.value)"
-                >${foto.comentario || ''}</textarea>
+                    oninput="actualizarComentarioFoto(${index}, this.value)"
+                >${comentarioEscapado}</textarea>
             </div>
         </div>
-    `).join('');
+    `;
+    }).join('');
+    
+    console.log('✅ Fotos renderizadas en el DOM');
 }
 
 // Actualizar comentario de una foto
 window.actualizarComentarioFoto = function(index, comentario) {
+    console.log('📝 Actualizando comentario de foto', index, comentario);
     if (fotosSubidas[index]) {
         fotosSubidas[index].comentario = comentario;
         if (archivoActual) {
