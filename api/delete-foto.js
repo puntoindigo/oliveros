@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { path } = await req.json();
+        const { path } = req.body || {};
 
         if (!path) {
             return res.status(400).json({ error: 'No se proporcionó la ruta del archivo' });

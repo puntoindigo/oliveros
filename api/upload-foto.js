@@ -25,8 +25,8 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Obtener datos del body JSON
-        const { file, fileName, fileType, archivoPath } = await req.json();
+        // Obtener datos del body JSON (en Vercel, req.body ya viene parseado)
+        const { file, fileName, fileType, archivoPath } = req.body || {};
 
         if (!file || !fileName) {
             return res.status(400).json({ error: 'No se proporcionó ningún archivo' });
