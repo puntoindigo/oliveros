@@ -3,16 +3,7 @@
     "titulo": "Cabaña 1",
     "comentarios": "HACER ELECTRICIDAD Y BAÑO COMPLETO\n\nTIENE 2 SOMMIERS, AIRE ACONDICIONADO, HELADERA, SANITARIOS SIN INSTALAR\n\nNO TIENE COCINA",
     "fechaActualizacion": "2025-12-30T14:40:25.084Z",
-    "fotos": [
-      {
-        "id": 1767107914732.4377,
-        "nombre": "Captura de pantalla 2025-12-30 a la(s) 12.18.30 p. m..png",
-        "url": "https://raw.githubusercontent.com/puntoindigo/oliveros/main/admin/fotos/videos_cab1.mp4_1767107914140.png",
-        "path": "admin/fotos/videos_cab1.mp4_1767107914140.png",
-        "comentario": "",
-        "fechaSubida": "2025-12-30T15:18:34.732Z"
-      }
-    ]
+    "fotos": []
   },
   "videos/cab2.mp4": {
     "titulo": "Cabaña 2",
