@@ -460,6 +460,18 @@ async function subirFoto(file) {
     });
 }
 
+// Obtener nombre legible para la foto
+function obtenerNombreLegible(foto, index) {
+    // Si es una captura, mostrar "Captura" con número
+    if (foto.nombre.startsWith('captura_')) {
+        return `Captura ${index + 1}`;
+    }
+    // Si tiene extensión, quitarla
+    const nombreSinExtension = foto.nombre.replace(/\.[^/.]+$/, '');
+    // Limpiar caracteres especiales y guiones
+    return nombreSinExtension.replace(/[_-]/g, ' ').trim() || `Foto ${index + 1}`;
+}
+
 // Mostrar fotos en la lista según el layout actual
 function mostrarFotos() {
     const fotosList = document.getElementById('fotosList');
@@ -482,19 +494,20 @@ function mostrarFotos() {
         // Layout pequeño: fotos chicas con descripción acotada y posibilidad de ampliar
         fotosList.innerHTML = fotosSubidas.map((foto, index) => {
             const comentarioEscapado = (foto.comentario || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            const nombreLegible = obtenerNombreLegible(foto, index);
             const comentarioPreview = (foto.comentario || '').substring(0, 50) + ((foto.comentario || '').length > 50 ? '...' : '');
             return `
             <div class="foto-item foto-item-small" data-index="${index}">
                 <div class="foto-preview-small" onclick="ampliarFoto(${index})">
-                    <img src="${foto.url}" alt="${foto.nombre}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
+                    <img src="${foto.url}" alt="${nombreLegible}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
                     <button class="btn-delete-foto" onclick="event.stopPropagation(); eliminarFoto(${index})" title="Eliminar foto">×</button>
                 </div>
                 <div class="foto-info-small">
-                    <p class="foto-nombre-small" title="${foto.nombre}">${foto.nombre.length > 20 ? foto.nombre.substring(0, 20) + '...' : foto.nombre}</p>
-                    <p class="foto-comentario-preview">${comentarioPreview || 'Sin comentario'}</p>
+                    <p class="foto-nombre-small" title="${nombreLegible}">${nombreLegible.length > 20 ? nombreLegible.substring(0, 20) + '...' : nombreLegible}</p>
+                    <p class="foto-comentario-preview">${comentarioPreview || 'Sin notas'}</p>
                     <textarea 
                         class="foto-comentario-small" 
-                        placeholder="Comentario..."
+                        placeholder="Notas"
                         oninput="actualizarComentarioFoto(${index}, this.value)"
                         onclick="event.stopPropagation()"
                     >${comentarioEscapado}</textarea>
@@ -506,19 +519,20 @@ function mostrarFotos() {
         // Layout lista: tipo Windows
         fotosList.innerHTML = fotosSubidas.map((foto, index) => {
             const comentarioEscapado = (foto.comentario || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            const nombreLegible = obtenerNombreLegible(foto, index);
             return `
             <div class="foto-item foto-item-list" data-index="${index}">
                 <div class="foto-preview-list">
-                    <img src="${foto.url}" alt="${foto.nombre}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
+                    <img src="${foto.url}" alt="${nombreLegible}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
                 </div>
                 <div class="foto-info-list">
                     <div class="foto-header-list">
-                        <p class="foto-nombre-list">${foto.nombre}</p>
+                        <p class="foto-nombre-list">${nombreLegible}</p>
                         <button class="btn-delete-foto-list" onclick="eliminarFoto(${index})" title="Eliminar foto">×</button>
                     </div>
                     <textarea 
                         class="foto-comentario-list" 
-                        placeholder="Comentario sobre esta foto..."
+                        placeholder="Notas"
                         oninput="actualizarComentarioFoto(${index}, this.value)"
                     >${comentarioEscapado}</textarea>
                 </div>
@@ -529,17 +543,18 @@ function mostrarFotos() {
         // Layout grande: como estaba antes
         fotosList.innerHTML = fotosSubidas.map((foto, index) => {
             const comentarioEscapado = (foto.comentario || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+            const nombreLegible = obtenerNombreLegible(foto, index);
             return `
             <div class="foto-item foto-item-large" data-index="${index}">
                 <div class="foto-preview">
-                    <img src="${foto.url}" alt="${foto.nombre}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
+                    <img src="${foto.url}" alt="${nombreLegible}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
                     <button class="btn-delete-foto" onclick="eliminarFoto(${index})" title="Eliminar foto">×</button>
                 </div>
                 <div class="foto-info">
-                    <p class="foto-nombre">${foto.nombre}</p>
+                    <p class="foto-nombre">${nombreLegible}</p>
                     <textarea 
                         class="foto-comentario" 
-                        placeholder="Comentario sobre esta foto..."
+                        placeholder="Notas"
                         oninput="actualizarComentarioFoto(${index}, this.value)"
                     >${comentarioEscapado}</textarea>
                 </div>
@@ -589,9 +604,11 @@ window.ampliarFoto = function(index) {
     }
     
     // Llenar modal
+    const nombreLegible = obtenerNombreLegible(foto, index);
     document.getElementById('fotoModalImg').src = foto.url;
-    document.getElementById('fotoModalNombre').textContent = foto.nombre;
+    document.getElementById('fotoModalNombre').textContent = nombreLegible;
     document.getElementById('fotoModalComentario').value = foto.comentario || '';
+    document.getElementById('fotoModalComentario').placeholder = 'Notas';
     modal.dataset.index = index;
     modal.style.display = 'flex';
 };
@@ -741,7 +758,7 @@ function inicializarCaptura() {
                             nombre: fileName,
                             url: fotoData.url,
                             path: fotoData.path,
-                            comentario: `Captura del video ${archivoActual.filename} en ${new Date().toLocaleString('es-AR')}`,
+                            comentario: '', // Sin comentario automático, solo placeholder
                             fechaSubida: new Date().toISOString()
                         });
                         

@@ -668,18 +668,27 @@ h1, h2, h3, h4 {
 
 .foto-comentario-list {
     width: 100%;
-    padding: 6px;
+    padding: 8px 10px;
     border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 0.8rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
     font-family: inherit;
     resize: vertical;
-    min-height: 40px;
+    min-height: 50px;
+    background: #fafafa;
+    transition: all 0.2s;
+}
+
+.foto-comentario-list:hover {
+    background: #f5f5f5;
+    border-color: #bbb;
 }
 
 .foto-comentario-list:focus {
     outline: none;
     border-color: #2c5530;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(44, 85, 48, 0.1);
 }
 
 .foto-item {
@@ -843,20 +852,29 @@ h1, h2, h3, h4 {
     color: #333;
 }
 
-.foto-modal-comentario {
+#fotoModalComentario {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 0.875rem;
     font-family: inherit;
     resize: vertical;
-    min-height: 60px;
+    min-height: 80px;
+    background: #fafafa;
+    transition: all 0.2s;
 }
 
-.foto-modal-comentario:focus {
+#fotoModalComentario:hover {
+    background: #f5f5f5;
+    border-color: #bbb;
+}
+
+#fotoModalComentario:focus {
     outline: none;
     border-color: #2c5530;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(44, 85, 48, 0.1);
 }
 
 .foto-modal-close {
