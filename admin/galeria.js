@@ -251,7 +251,7 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
         fechaActualizacion: new Date().toISOString()
     };
     
-    mostrarEstado('saving', 'Guardando...');
+    // No mostrar toast de guardando, solo mostrar success al finalizar
     await guardarMetadata();
     mostrarArchivos(); // Refrescar lista
 });
@@ -292,10 +292,7 @@ function mostrarEstado(tipo, mensaje) {
     } else if (tipo === 'error') {
         toast.style.background = '#c62828';
         toast.style.color = 'white';
-    } else if (tipo === 'saving') {
-        toast.style.background = '#ff9800';
-        toast.style.color = 'white';
-    }
+    // Removido tipo 'saving' - solo success y error
     
     // Mostrar toast con animación
     toast.style.opacity = '1';
@@ -373,7 +370,7 @@ async function manejarArchivos(files) {
         return;
     }
     
-    mostrarEstado('saving', `Subiendo ${imageFiles.length} foto(s)...`);
+    // No mostrar toast de guardando
     
     const fotosSubidasAntes = fotosSubidas.length;
     
@@ -516,7 +513,6 @@ function mostrarFotos() {
                 </div>
                 <div class="foto-info-small">
                     <p class="foto-nombre-small" title="${nombreLegible}">${nombreLegible.length > 20 ? nombreLegible.substring(0, 20) + '...' : nombreLegible}</p>
-                    ${comentarioPreview ? `<p class="foto-comentario-preview">${comentarioPreview}</p>` : ''}
                     <textarea 
                         class="foto-comentario-small" 
                         placeholder="Notas"
@@ -792,7 +788,7 @@ function inicializarCaptura() {
                     const fileName = `captura_${archivoActual.nombreSinExtension}_${timestamp}.png`;
                     const file = new File([blob], fileName, { type: 'image/png' });
                     
-                    mostrarEstado('saving', 'Guardando captura...');
+                    // No mostrar toast de guardando
                     
                     // Subir como foto nueva
                     try {

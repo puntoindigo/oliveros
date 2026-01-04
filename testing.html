@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing - Oliveros</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: #2c5530;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            color: #2c5530;
+            margin-bottom: 16px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #2c5530;
+            padding-bottom: 8px;
+        }
+
+        .access-item {
+            padding: 12px;
+            background: #f9f9f9;
+            border-left: 4px solid #2c5530;
+            margin-bottom: 12px;
+            border-radius: 4px;
+        }
+
+        .access-item strong {
+            color: #2c5530;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .access-item a {
+            color: #2c5530;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .access-item a:hover {
+            text-decoration: underline;
+        }
+
+        .commit-item {
+            padding: 16px;
+            background: #f9f9f9;
+            border-left: 4px solid #2c5530;
+            margin-bottom: 12px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .commit-item.reviewed {
+            border-left-color: #4caf50;
+            background: #f1f8f4;
+        }
+
+        .commit-info {
+            flex: 1;
+        }
+
+        .commit-hash {
+            font-family: monospace;
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .commit-message {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .commit-meta {
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .commit-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-review {
+            padding: 8px 16px;
+            background: #2c5530;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: background 0.2s;
+        }
+
+        .btn-review:hover {
+            background: #1e3a21;
+        }
+
+        .btn-review.reviewed {
+            background: #4caf50;
+        }
+
+        .btn-review.reviewed:hover {
+            background: #45a049;
+        }
+
+        .instructions {
+            background: #fff9e6;
+            border-left: 4px solid #ff9800;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-radius: 4px;
+        }
+
+        .instructions h3 {
+            color: #ff9800;
+            margin-bottom: 8px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        .status-badge.pending {
+            background: #ff9800;
+            color: white;
+        }
+
+        .status-badge.reviewed {
+            background: #4caf50;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .error {
+            background: #ffebee;
+            border-left: 4px solid #c62828;
+            padding: 16px;
+            color: #c62828;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🧪 Testing - Oliveros</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Accesos -->
+        <div class="section">
+            <h2>🔗 Accesos</h2>
+            <div class="access-item">
+                <strong>Admin Login:</strong>
+                <a href="/admin/index.html" target="_blank">/admin/index.html</a>
+            </div>
+            <div class="access-item">
+                <strong>Admin Galería (Desktop):</strong>
+                <a href="/admin/galeria.html" target="_blank">/admin/galeria.html</a>
+            </div>
+            <div class="access-item">
+                <strong>Admin Galería (Mobile):</strong>
+                <a href="/admin/galeria_mobile.html" target="_blank">/admin/galeria_mobile.html</a>
+            </div>
+            <div class="access-item">
+                <strong>Sitio Principal:</strong>
+                <a href="/" target="_blank">/</a>
+            </div>
+        </div>
+
+        <!-- Instrucciones de Testeo -->
+        <div class="section">
+            <h2>📋 Instrucciones de Testeo</h2>
+            <div class="instructions">
+                <h3>Flujo de Testing Básico</h3>
+                <ol>
+                    <li>Acceder al admin con las credenciales configuradas</li>
+                    <li>Verificar que la lista de videos se carga correctamente</li>
+                    <li>Seleccionar un video y verificar que se reproduce</li>
+                    <li>Probar edición de título y comentarios</li>
+                    <li>Probar subida de fotos (drag & drop y click)</li>
+                    <li>Probar captura de video</li>
+                    <li>Probar diferentes layouts de fotos (small, list, large)</li>
+                    <li>Probar edición de comentarios en fotos</li>
+                    <li>Probar eliminación de fotos (debe mostrar modal de confirmación)</li>
+                    <li>Verificar que los cambios se guardan correctamente</li>
+                    <li>Probar funcionalidad mobile (burger menu, auto-open)</li>
+                    <li>Verificar que no aparecen alerts, solo toasts</li>
+                </ol>
+            </div>
+            <div class="instructions">
+                <h3>Checklist de Funcionalidades</h3>
+                <ol>
+                    <li>✅ Login con "Guardar contraseña"</li>
+                    <li>✅ Lista de videos carga desde archivos locales</li>
+                    <li>✅ Reproducción de videos desde Git LFS</li>
+                    <li>✅ Guardado de metadata en JSON vía GitHub API</li>
+                    <li>✅ Subida de fotos a GitHub</li>
+                    <li>✅ Captura de frames de video</li>
+                    <li>✅ Layouts de fotos (small, list, large)</li>
+                    <li>✅ Modal de confirmación para eliminar</li>
+                    <li>✅ Toasts para notificaciones (sin alerts)</li>
+                    <li>✅ Mobile menu con burger</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Últimos Commits -->
+        <div class="section">
+            <h2>📝 Últimos Commits</h2>
+            <div id="commitsContainer" class="loading">
+                Cargando commits...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cargar commits desde GitHub API
+        async function cargarCommits() {
+            const container = document.getElementById('commitsContainer');
+            
+            try {
+                const response = await fetch('https://api.github.com/repos/puntoindigo/oliveros/commits?per_page=20');
+                
+                if (!response.ok) {
+                    throw new Error('Error al cargar commits');
+                }
+                
+                const commits = await response.json();
+                const reviewedCommits = JSON.parse(localStorage.getItem('reviewedCommits') || '[]');
+                
+                container.innerHTML = commits.map(commit => {
+                    const isReviewed = reviewedCommits.includes(commit.sha);
+                    const date = new Date(commit.commit.author.date).toLocaleString('es-ES');
+                    
+                    return `
+                        <div class="commit-item ${isReviewed ? 'reviewed' : ''}" data-sha="${commit.sha}">
+                            <div class="commit-info">
+                                <div class="commit-hash">${commit.sha.substring(0, 7)}</div>
+                                <div class="commit-message">
+                                    ${commit.commit.message.split('\n')[0]}
+                                    ${isReviewed ? '<span class="status-badge reviewed">Revisado</span>' : '<span class="status-badge pending">Pendiente</span>'}
+                                </div>
+                                <div class="commit-meta">
+                                    ${commit.commit.author.name} • ${date}
+                                </div>
+                            </div>
+                            <div class="commit-actions">
+                                <button class="btn-review ${isReviewed ? 'reviewed' : ''}" onclick="marcarCommit('${commit.sha}')">
+                                    ${isReviewed ? '✓ Revisado' : 'Marcar como Revisado'}
+                                </button>
+                                <a href="${commit.html_url}" target="_blank" style="padding: 8px 16px; background: #f5f5f5; color: #333; text-decoration: none; border-radius: 4px; font-size: 0.875rem;">Ver en GitHub</a>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                container.innerHTML = `<div class="error">Error al cargar commits: ${error.message}</div>`;
+            }
+        }
+
+        function marcarCommit(sha) {
+            const reviewedCommits = JSON.parse(localStorage.getItem('reviewedCommits') || '[]');
+            
+            if (reviewedCommits.includes(sha)) {
+                // Desmarcar
+                const index = reviewedCommits.indexOf(sha);
+                reviewedCommits.splice(index, 1);
+            } else {
+                // Marcar
+                reviewedCommits.push(sha);
+            }
+            
+            localStorage.setItem('reviewedCommits', JSON.stringify(reviewedCommits));
+            cargarCommits();
+        }
+
+        // Cargar commits al iniciar
+        cargarCommits();
+    </script>
+</body>
+</html>
+
