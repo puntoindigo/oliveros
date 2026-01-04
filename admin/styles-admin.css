@@ -567,13 +567,6 @@ h1, h2, h3, h4 {
     font-weight: 500;
 }
 
-.foto-comentario-preview {
-    font-size: 0.7rem;
-    color: #999;
-    margin-bottom: 4px;
-    line-height: 1.3;
-}
-
 .foto-comentario-small {
     width: 100%;
     padding: 4px;
