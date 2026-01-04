@@ -504,7 +504,6 @@ function mostrarFotos() {
         fotosList.innerHTML = fotosSubidas.map((foto, index) => {
             const comentarioEscapado = (foto.comentario || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             const nombreLegible = obtenerNombreLegible(foto, index);
-            const comentarioPreview = (foto.comentario || '').substring(0, 50) + ((foto.comentario || '').length > 50 ? '...' : '');
             return `
             <div class="foto-item foto-item-small" data-index="${index}">
                 <div class="foto-preview-small" onclick="ampliarFoto(${index})">
