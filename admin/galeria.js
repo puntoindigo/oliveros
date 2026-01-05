@@ -36,6 +36,7 @@ let metadata = {};
 let archivoActual = null;
 let fotosSubidas = []; // Array de fotos subidas para el archivo actual
 let layoutActual = 'small'; // Layout por defecto: small, list, large
+let debounceTimer = null; // Timer para guardado automático con debounce
 
 // Cargar archivos locales estáticos
 async function cargarArchivos() {
@@ -232,14 +233,21 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
     const titulo = document.getElementById('archivoTitulo').value.trim();
     const comentarios = document.getElementById('archivoComentarios').value.trim();
     
-    // Actualizar comentarios de fotos desde los textareas
+    // Actualizar comentarios de fotos desde los textareas (capturar todos los layouts)
     const fotoItems = document.querySelectorAll('.foto-item');
     fotoItems.forEach((item, index) => {
-        const textarea = item.querySelector('.foto-comentario');
+        // Buscar textarea en todos los layouts posibles
+        const textarea = item.querySelector('.foto-comentario, .foto-comentario-small, .foto-comentario-list');
         if (textarea && fotosSubidas[index]) {
             fotosSubidas[index].comentario = textarea.value.trim();
         }
     });
+    
+    // Cancelar cualquier guardado automático pendiente antes de guardar manualmente
+    if (debounceTimer) {
+        clearTimeout(debounceTimer);
+        debounceTimer = null;
+    }
     
     const nombreSinExtension = archivoActual.nombreSinExtension;
     const tituloFinal = titulo || nombreSinExtension;
@@ -651,6 +659,15 @@ window.actualizarComentarioFoto = function(index, comentario) {
                 ...metadata[archivoActual.pathname],
                 fotos: fotosSubidas
             };
+            
+            // Guardar automáticamente después de 1 segundo de inactividad (debounce)
+            if (debounceTimer) {
+                clearTimeout(debounceTimer);
+            }
+            debounceTimer = setTimeout(async () => {
+                console.log('💾 Guardando comentarios automáticamente...');
+                await guardarMetadata();
+            }, 1000); // Esperar 1 segundo después de que el usuario deje de escribir
         }
     }
 };
