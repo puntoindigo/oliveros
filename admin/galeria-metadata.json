@@ -23,7 +23,17 @@
   "videos/cab3.mp4": {
     "titulo": "Cabaña 3",
     "comentarios": "TIENE 6 SOMMIERS, HELADERA, BACHA OK, SANITARIOS INSTALADOS\n\nFALTA PISOS. PARECE SER LA QUE MEJOR ESTÁ",
-    "fechaActualizacion": "2025-12-30T14:41:15.433Z"
+    "fechaActualizacion": "2025-12-30T14:41:15.433Z",
+    "fotos": [
+      {
+        "id": 1767637375327.895,
+        "nombre": "captura_cab3_2026-01-05T18-22-52-384Z.png",
+        "url": "https://raw.githubusercontent.com/puntoindigo/oliveros/main/admin/fotos/videos_cab3.mp4_1767637374537.png",
+        "path": "admin/fotos/videos_cab3.mp4_1767637374537.png",
+        "comentario": "",
+        "fechaSubida": "2026-01-05T18:22:55.327Z"
+      }
+    ]
   },
   "videos/cab4-grande.mp4": {
     "titulo": "Cabaña4-grande",
