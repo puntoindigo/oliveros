@@ -292,6 +292,7 @@ function mostrarEstado(tipo, mensaje) {
     } else if (tipo === 'error') {
         toast.style.background = '#c62828';
         toast.style.color = 'white';
+    }
     // Removido tipo 'saving' - solo success y error
     
     // Mostrar toast con animación
@@ -304,9 +305,7 @@ function mostrarEstado(tipo, mensaje) {
             toast.style.opacity = '0';
             toast.style.transform = 'translateX(-50%) translateY(-100px)';
         }, 3000);
-    } else if (tipo === 'saving') {
-        // Mantener visible mientras guarda
-    } else {
+    } else if (tipo === 'error') {
         // Para errores, mantener visible más tiempo
         setTimeout(() => {
             toast.style.opacity = '0';
