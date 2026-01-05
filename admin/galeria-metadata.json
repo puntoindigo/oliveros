@@ -2,22 +2,23 @@
   "videos/cab1.mp4": {
     "titulo": "Cabaña 1",
     "comentarios": "HACER ELECTRICIDAD Y BAÑO COMPLETO\n\nTIENE 2 SOMMIERS, AIRE ACONDICIONADO, HELADERA, SANITARIOS SIN INSTALAR\n\nNO TIENE COCINA",
-    "fotos": [
-      {
-        "id": 1767568267872.1523,
-        "nombre": "Captura de pantalla 2025-12-30 a la(s) 12.59.03 p. m..png",
-        "url": "https://raw.githubusercontent.com/puntoindigo/oliveros/main/admin/fotos/videos_cab1.mp4_1767568267124.png",
-        "path": "admin/fotos/videos_cab1.mp4_1767568267124.png",
-        "comentario": "",
-        "fechaSubida": "2026-01-04T23:11:07.872Z"
-      }
-    ],
+    "fotos": [],
     "fechaActualizacion": "2025-12-30T15:30:27.682Z"
   },
   "videos/cab2.mp4": {
     "titulo": "Cabaña 2",
     "comentarios": "PISOS PAREDES Y BAÑO\nTIENE HELADERA, COCINA, SANITARIOS SIN INSTALAR\n\nNO TIENE SOMMIERS\n\nHUMEDAD EN LAS PAREDES",
-    "fechaActualizacion": "2025-12-30T14:40:50.440Z"
+    "fechaActualizacion": "2025-12-30T14:40:50.440Z",
+    "fotos": [
+      {
+        "id": 1767628133647.173,
+        "nombre": "captura_cab2_2026-01-05T15-48-50-268Z.png",
+        "url": "https://raw.githubusercontent.com/puntoindigo/oliveros/main/admin/fotos/videos_cab2.mp4_1767628132440.png",
+        "path": "admin/fotos/videos_cab2.mp4_1767628132440.png",
+        "comentario": "",
+        "fechaSubida": "2026-01-05T15:48:53.647Z"
+      }
+    ]
   },
   "videos/cab3.mp4": {
     "titulo": "Cabaña 3",
