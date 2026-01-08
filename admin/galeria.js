@@ -721,6 +721,7 @@ function inicializarDragAndDrop() {
             background: rgba(44, 85, 48, 0.1);
             min-height: 150px;
             transition: all 0.2s;
+            pointer-events: none;
         `;
         return ph;
     }
@@ -760,27 +761,32 @@ function inicializarDragAndDrop() {
             draggedElement = item;
             draggedIndex = parseInt(item.dataset.index) || index;
             
-            // Crear placeholder ANTES de modificar el elemento
-            placeholder = createPlaceholder();
-            const itemRect = item.getBoundingClientRect();
-            placeholder.style.width = itemRect.width + 'px';
-            placeholder.style.height = itemRect.height + 'px';
-            placeholder.style.minHeight = itemRect.height + 'px';
-            
-            // Insertar placeholder después del elemento (no antes)
-            if (item.nextSibling) {
-                item.parentNode.insertBefore(placeholder, item.nextSibling);
-            } else {
-                item.parentNode.appendChild(placeholder);
-            }
-            
-            // Ocultar elemento original DESPUÉS de crear placeholder
+            // Ocultar elemento original primero
             item.style.opacity = '0.3';
             item.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('text/plain', draggedIndex.toString());
             
-            console.log('✅ Drag iniciado, placeholder creado en posición:', Array.from(item.parentNode.children).indexOf(placeholder));
+            // Crear placeholder después de un pequeño delay para que el drag no se cancele
+            setTimeout(() => {
+                if (draggedElement === item && !placeholder) {
+                    placeholder = createPlaceholder();
+                    const itemRect = item.getBoundingClientRect();
+                    placeholder.style.width = itemRect.width + 'px';
+                    placeholder.style.height = itemRect.height + 'px';
+                    placeholder.style.minHeight = itemRect.height + 'px';
+                    
+                    // Insertar placeholder después del elemento
+                    if (item.nextSibling) {
+                        item.parentNode.insertBefore(placeholder, item.nextSibling);
+                    } else {
+                        item.parentNode.appendChild(placeholder);
+                    }
+                    console.log('✅ Placeholder creado en posición:', Array.from(item.parentNode.children).indexOf(placeholder));
+                }
+            }, 10);
+            
+            console.log('✅ Drag iniciado');
         });
         
         item.addEventListener('dragend', (e) => {
