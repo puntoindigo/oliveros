@@ -729,9 +729,18 @@ function inicializarDragAndDrop() {
         // Asegurar que el elemento sea draggable
         item.setAttribute('draggable', 'true');
         
+        // Prevenir drag en elementos hijos
+        const childElements = item.querySelectorAll('img, button, textarea, p');
+        childElements.forEach(child => {
+            child.setAttribute('draggable', 'false');
+            child.addEventListener('dragstart', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+        
         item.addEventListener('dragstart', (e) => {
-            // Prevenir que elementos hijos interfieran
-            if (e.target !== item && !item.contains(e.target)) return;
+            console.log('🚀 Drag start en item', index, e.target);
             
             draggedElement = item;
             draggedIndex = parseInt(item.dataset.index) || index;
@@ -748,6 +757,8 @@ function inicializarDragAndDrop() {
             placeholder.style.width = itemRect.width + 'px';
             placeholder.style.height = itemRect.height + 'px';
             item.parentNode.insertBefore(placeholder, item);
+            
+            console.log('✅ Drag iniciado, placeholder creado');
         });
         
         item.addEventListener('dragend', (e) => {
