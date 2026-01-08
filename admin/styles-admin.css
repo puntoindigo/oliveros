@@ -543,10 +543,18 @@ h1, h2, h3, h4 {
     box-sizing: border-box;
     min-width: 0;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .foto-item-small .foto-preview-small {
     cursor: pointer;
+    flex-shrink: 0;
+}
+
+.foto-item-small .foto-info-small {
+    flex-shrink: 0;
+    flex-grow: 0;
 }
 
 .foto-preview-small {
