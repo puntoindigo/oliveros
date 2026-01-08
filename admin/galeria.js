@@ -836,19 +836,55 @@ function inicializarDragAndDrop() {
         
         item.addEventListener('drop', async (e) => {
             e.preventDefault();
+            e.stopPropagation();
             
-            if (!draggedElement || draggedElement === item || draggedIndex === null || !placeholder) return;
+            console.log('🎯 Drop en item', index, 'draggedElement:', draggedElement, 'placeholder:', placeholder);
+            
+            if (!draggedElement || draggedElement === item || draggedIndex === null) {
+                console.log('❌ Drop cancelado: condiciones no cumplidas');
+                return;
+            }
+            
+            // Si no hay placeholder, crearlo ahora
+            if (!placeholder) {
+                placeholder = createPlaceholder();
+                const itemRect = draggedElement.getBoundingClientRect();
+                placeholder.style.width = itemRect.width + 'px';
+                placeholder.style.height = itemRect.height + 'px';
+                placeholder.style.minHeight = itemRect.height + 'px';
+                
+                const rect = item.getBoundingClientRect();
+                const next = (e.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+                
+                if (next) {
+                    fotosList.insertBefore(placeholder, item.nextSibling);
+                } else {
+                    fotosList.insertBefore(placeholder, item);
+                }
+            }
             
             // Obtener nuevo índice basado en la posición del placeholder
-            const allItems = Array.from(fotosList.querySelectorAll('.foto-item:not(.dragging)'));
-            const placeholderIndex = Array.from(fotosList.children).indexOf(placeholder);
-            const itemsBeforePlaceholder = Array.from(fotosList.children).slice(0, placeholderIndex).filter(el => el.classList.contains('foto-item'));
-            const newIndex = itemsBeforePlaceholder.length;
+            const allChildren = Array.from(fotosList.children);
+            const placeholderIndex = allChildren.indexOf(placeholder);
             
-            if (draggedIndex !== newIndex && newIndex !== -1) {
+            // Contar solo los foto-item (excluyendo placeholder y el elemento arrastrado)
+            let newIndex = 0;
+            for (let i = 0; i < placeholderIndex; i++) {
+                const child = allChildren[i];
+                if (child.classList.contains('foto-item') && child !== draggedElement) {
+                    newIndex++;
+                }
+            }
+            
+            console.log('📊 Índices - Original:', draggedIndex, 'Nuevo:', newIndex, 'Placeholder en:', placeholderIndex);
+            
+            if (draggedIndex !== newIndex) {
+                console.log('🔄 Reordenando fotos...');
                 // Reordenar array
                 const [movedItem] = fotosSubidas.splice(draggedIndex, 1);
                 fotosSubidas.splice(newIndex, 0, movedItem);
+                
+                console.log('✅ Array reordenado:', fotosSubidas.map((f, i) => i + ':' + f.nombre));
                 
                 // Actualizar metadata y guardar automáticamente
                 if (archivoActual) {
@@ -862,6 +898,7 @@ function inicializarDragAndDrop() {
                 // Re-renderizar
                 mostrarFotos();
             } else {
+                console.log('⚠️ No hay cambio de posición');
                 // Si no hubo cambio, solo remover placeholder y restaurar
                 if (placeholder && placeholder.parentNode) {
                     placeholder.parentNode.removeChild(placeholder);
