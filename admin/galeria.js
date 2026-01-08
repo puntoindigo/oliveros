@@ -227,8 +227,10 @@ function seleccionarArchivo(index) {
     videoPlayer.load();
 }
 
-// Guardar cambios
-document.getElementById('saveBtn').addEventListener('click', async () => {
+// Guardar cambios automáticamente para título y comentarios del video
+let debounceTimerVideo = null;
+
+function guardarCambiosVideo() {
     if (!archivoActual) return;
     
     const titulo = document.getElementById('archivoTitulo').value.trim();
@@ -244,12 +246,6 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
         }
     });
     
-    // Cancelar cualquier guardado automático pendiente antes de guardar manualmente
-    if (debounceTimer) {
-        clearTimeout(debounceTimer);
-        debounceTimer = null;
-    }
-    
     const nombreSinExtension = archivoActual.nombreSinExtension;
     const tituloFinal = titulo || nombreSinExtension;
     
@@ -260,10 +256,33 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
         fechaActualizacion: new Date().toISOString()
     };
     
-    // No mostrar toast de guardando, solo mostrar success al finalizar
-    await guardarMetadata();
-    mostrarArchivos(); // Refrescar lista
-});
+    // Guardar automáticamente después de 1 segundo de inactividad (debounce)
+    if (debounceTimerVideo) {
+        clearTimeout(debounceTimerVideo);
+    }
+    debounceTimerVideo = setTimeout(async () => {
+        console.log('💾 Guardando cambios del video automáticamente...');
+        await guardarMetadata();
+    }, 1000);
+}
+
+// Inicializar event listeners para guardado automático
+function inicializarGuardadoAutomatico() {
+    const tituloInput = document.getElementById('archivoTitulo');
+    const comentariosInput = document.getElementById('archivoComentarios');
+    
+    if (tituloInput) {
+        // Remover listeners anteriores si existen
+        tituloInput.removeEventListener('input', guardarCambiosVideo);
+        tituloInput.addEventListener('input', guardarCambiosVideo);
+    }
+    
+    if (comentariosInput) {
+        // Remover listeners anteriores si existen
+        comentariosInput.removeEventListener('input', guardarCambiosVideo);
+        comentariosInput.addEventListener('input', guardarCambiosVideo);
+    }
+}
 
 function mostrarEstado(tipo, mensaje) {
     // Crear toast notification si no existe
