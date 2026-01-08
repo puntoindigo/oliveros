@@ -656,8 +656,8 @@ function mostrarFotos() {
 function cambiarLayout(layout) {
     layoutActual = layout;
     
-    // Actualizar botones activos
-    document.querySelectorAll('.layout-btn').forEach(btn => {
+    // Actualizar botones activos (solo los que tienen data-layout, excluyendo el toggle)
+    document.querySelectorAll('.layout-btn[data-layout]').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.layout === layout);
     });
     
