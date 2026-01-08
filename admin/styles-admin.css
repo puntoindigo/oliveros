@@ -574,6 +574,10 @@ h1, h2, h3, h4 {
     overflow: hidden;
 }
 
+.foto-info-hidden {
+    display: none !important;
+}
+
 .foto-nombre-small {
     font-size: 0.75rem;
     color: #666;

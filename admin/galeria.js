@@ -577,14 +577,14 @@ function mostrarFotos() {
         fotosList.innerHTML = fotosSubidas.map((foto, index) => {
             const comentarioEscapado = (foto.comentario || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             const nombreLegible = obtenerNombreLegible(foto, index);
-            const infoStyle = mostrarInfoFotos ? '' : 'style="display: none;"';
+            const infoClass = mostrarInfoFotos ? '' : 'foto-info-hidden';
             return `
             <div class="foto-item foto-item-small" data-index="${index}" draggable="true">
                 <div class="foto-preview-small" onclick="ampliarFoto(${index})">
                     <img src="${foto.url}" alt="${nombreLegible}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
                     <button class="btn-delete-foto" onclick="event.stopPropagation(); eliminarFoto(${index})" title="Eliminar foto">×</button>
                 </div>
-                <div class="foto-info-small" ${infoStyle}>
+                <div class="foto-info-small ${infoClass}">
                     <p class="foto-nombre-small" title="${nombreLegible}">${nombreLegible.length > 20 ? nombreLegible.substring(0, 20) + '...' : nombreLegible}</p>
                     <textarea 
                         class="foto-comentario-small" 
@@ -601,13 +601,13 @@ function mostrarFotos() {
         fotosList.innerHTML = fotosSubidas.map((foto, index) => {
             const comentarioEscapado = (foto.comentario || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             const nombreLegible = obtenerNombreLegible(foto, index);
-            const infoStyle = mostrarInfoFotos ? '' : 'style="display: none;"';
+            const infoClass = mostrarInfoFotos ? '' : 'foto-info-hidden';
             return `
             <div class="foto-item foto-item-list" data-index="${index}" draggable="true">
                 <div class="foto-preview-list">
                     <img src="${foto.url}" alt="${nombreLegible}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
                 </div>
-                <div class="foto-info-list" ${infoStyle}>
+                <div class="foto-info-list ${infoClass}">
                     <div class="foto-header-list">
                         <p class="foto-nombre-list">${nombreLegible}</p>
                         <button class="btn-delete-foto-list" onclick="eliminarFoto(${index})" title="Eliminar foto">×</button>
@@ -626,14 +626,14 @@ function mostrarFotos() {
         fotosList.innerHTML = fotosSubidas.map((foto, index) => {
             const comentarioEscapado = (foto.comentario || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             const nombreLegible = obtenerNombreLegible(foto, index);
-            const infoStyle = mostrarInfoFotos ? '' : 'style="display: none;"';
+            const infoClass = mostrarInfoFotos ? '' : 'foto-info-hidden';
             return `
             <div class="foto-item foto-item-large" data-index="${index}" draggable="true">
                 <div class="foto-preview">
                     <img src="${foto.url}" alt="${nombreLegible}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
                     <button class="btn-delete-foto" onclick="eliminarFoto(${index})" title="Eliminar foto">×</button>
                 </div>
-                <div class="foto-info" ${infoStyle}>
+                <div class="foto-info ${infoClass}">
                     <p class="foto-nombre">${nombreLegible}</p>
                     <textarea 
                         class="foto-comentario" 
