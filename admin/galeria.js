@@ -726,15 +726,21 @@ function inicializarDragAndDrop() {
     }
     
     items.forEach((item, index) => {
+        // Asegurar que el elemento sea draggable
+        item.setAttribute('draggable', 'true');
+        
         item.addEventListener('dragstart', (e) => {
+            // Prevenir que elementos hijos interfieran
+            if (e.target !== item && !item.contains(e.target)) return;
+            
             draggedElement = item;
-            draggedIndex = index;
+            draggedIndex = parseInt(item.dataset.index) || index;
             
             // Ocultar elemento original y crear placeholder
             item.style.opacity = '0.3';
             item.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', index.toString());
+            e.dataTransfer.setData('text/plain', draggedIndex.toString());
             
             // Crear placeholder con el mismo tamaño
             placeholder = createPlaceholder();
@@ -744,7 +750,7 @@ function inicializarDragAndDrop() {
             item.parentNode.insertBefore(placeholder, item);
         });
         
-        item.addEventListener('dragend', () => {
+        item.addEventListener('dragend', (e) => {
             if (draggedElement) {
                 draggedElement.style.opacity = '';
                 draggedElement.classList.remove('dragging');
@@ -812,6 +818,8 @@ function inicializarDragAndDrop() {
             }
         });
     });
+    
+    console.log('✅ Drag & drop inicializado para', items.length, 'elementos');
 }
 
 // Ampliar foto (modal)
