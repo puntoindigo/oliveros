@@ -84,19 +84,19 @@
       "destination": "/admin/videos/$1"
     },
     {
-      "source": "/admin/galeria",
+      "source": "/admin/galeria$",
       "destination": "/admin/galeria.html"
     },
     {
-      "source": "/admin/galeria-mobile",
+      "source": "/admin/galeria-mobile$",
       "destination": "/admin/galeria_mobile.html"
     },
     {
-      "source": "/admin/pago",
+      "source": "/admin/pago$",
       "destination": "/admin/pago.html"
     },
     {
-      "source": "/admin",
+      "source": "/admin$",
       "destination": "/admin/index.html"
     },
     {
