@@ -142,6 +142,11 @@ function mostrarArchivos() {
     });
     
     console.log('✅ Lista de videos renderizada');
+    
+    // Si no hay ningún archivo seleccionado, seleccionar automáticamente el primero
+    if (!archivoActual && archivos.length > 0) {
+        seleccionarArchivo(0);
+    }
 }
 
 // Seleccionar archivo
