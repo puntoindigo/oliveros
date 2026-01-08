@@ -551,6 +551,12 @@ h1, h2, h3, h4 {
 .foto-item-small .foto-preview-small {
     cursor: pointer;
     flex-shrink: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.foto-item-small.dragging .foto-preview-small {
+    cursor: grabbing;
 }
 
 .foto-item-small .foto-info-small {
