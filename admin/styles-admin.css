@@ -534,6 +534,10 @@ h1, h2, h3, h4 {
 }
 
 .foto-item-small {
+    cursor: move;
+}
+
+.foto-item-small .foto-preview-small {
     cursor: pointer;
 }
 
@@ -691,6 +695,16 @@ h1, h2, h3, h4 {
     background: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s;
+    cursor: move;
+}
+
+.foto-item.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.foto-item[draggable="true"]:hover {
+    cursor: grab;
 }
 
 .foto-item:hover {

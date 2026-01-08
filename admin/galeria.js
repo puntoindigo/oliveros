@@ -37,6 +37,7 @@ let archivoActual = null;
 let fotosSubidas = []; // Array de fotos subidas para el archivo actual
 let layoutActual = 'small'; // Layout por defecto: small, list, large
 let debounceTimer = null; // Timer para guardado automático con debounce
+let mostrarInfoFotos = false; // Mostrar/ocultar nombres y notas de fotos
 
 // Cargar archivos locales estáticos
 async function cargarArchivos() {
@@ -485,7 +486,6 @@ async function subirFoto(file) {
     
     if (file.size > limiteCompresion) {
         console.log(`📦 Comprimiendo imagen de ${(file.size / 1024 / 1024).toFixed(2)}MB manteniendo alta calidad...`);
-        mostrarEstado('info', `Comprimiendo imagen para subirla (manteniendo alta calidad)...`);
         try {
             archivoFinal = await comprimirImagen(file, limiteCompresion);
             console.log(`✅ Imagen comprimida a ${(archivoFinal.size / 1024 / 1024).toFixed(2)}MB`);
@@ -577,13 +577,14 @@ function mostrarFotos() {
         fotosList.innerHTML = fotosSubidas.map((foto, index) => {
             const comentarioEscapado = (foto.comentario || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             const nombreLegible = obtenerNombreLegible(foto, index);
+            const infoStyle = mostrarInfoFotos ? '' : 'style="display: none;"';
             return `
-            <div class="foto-item foto-item-small" data-index="${index}">
+            <div class="foto-item foto-item-small" data-index="${index}" draggable="true">
                 <div class="foto-preview-small" onclick="ampliarFoto(${index})">
                     <img src="${foto.url}" alt="${nombreLegible}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
                     <button class="btn-delete-foto" onclick="event.stopPropagation(); eliminarFoto(${index})" title="Eliminar foto">×</button>
                 </div>
-                <div class="foto-info-small">
+                <div class="foto-info-small" ${infoStyle}>
                     <p class="foto-nombre-small" title="${nombreLegible}">${nombreLegible.length > 20 ? nombreLegible.substring(0, 20) + '...' : nombreLegible}</p>
                     <textarea 
                         class="foto-comentario-small" 
@@ -600,12 +601,13 @@ function mostrarFotos() {
         fotosList.innerHTML = fotosSubidas.map((foto, index) => {
             const comentarioEscapado = (foto.comentario || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             const nombreLegible = obtenerNombreLegible(foto, index);
+            const infoStyle = mostrarInfoFotos ? '' : 'style="display: none;"';
             return `
-            <div class="foto-item foto-item-list" data-index="${index}">
+            <div class="foto-item foto-item-list" data-index="${index}" draggable="true">
                 <div class="foto-preview-list">
                     <img src="${foto.url}" alt="${nombreLegible}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
                 </div>
-                <div class="foto-info-list">
+                <div class="foto-info-list" ${infoStyle}>
                     <div class="foto-header-list">
                         <p class="foto-nombre-list">${nombreLegible}</p>
                         <button class="btn-delete-foto-list" onclick="eliminarFoto(${index})" title="Eliminar foto">×</button>
@@ -624,13 +626,14 @@ function mostrarFotos() {
         fotosList.innerHTML = fotosSubidas.map((foto, index) => {
             const comentarioEscapado = (foto.comentario || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
             const nombreLegible = obtenerNombreLegible(foto, index);
+            const infoStyle = mostrarInfoFotos ? '' : 'style="display: none;"';
             return `
-            <div class="foto-item foto-item-large" data-index="${index}">
+            <div class="foto-item foto-item-large" data-index="${index}" draggable="true">
                 <div class="foto-preview">
                     <img src="${foto.url}" alt="${nombreLegible}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3EImagen%3C/text%3E%3C/svg%3E'">
                     <button class="btn-delete-foto" onclick="eliminarFoto(${index})" title="Eliminar foto">×</button>
                 </div>
-                <div class="foto-info">
+                <div class="foto-info" ${infoStyle}>
                     <p class="foto-nombre">${nombreLegible}</p>
                     <textarea 
                         class="foto-comentario" 
@@ -642,6 +645,9 @@ function mostrarFotos() {
         `;
         }).join('');
     }
+    
+    // Inicializar drag & drop después de renderizar
+    inicializarDragAndDrop();
     
     console.log('✅ Fotos renderizadas en el DOM');
 }
@@ -657,6 +663,94 @@ function cambiarLayout(layout) {
     
     // Re-renderizar fotos
     mostrarFotos();
+}
+
+// Toggle mostrar/ocultar información de fotos
+function toggleMostrarInfo() {
+    mostrarInfoFotos = !mostrarInfoFotos;
+    
+    // Actualizar botón toggle
+    const toggleBtn = document.getElementById('toggleInfoBtn');
+    if (toggleBtn) {
+        toggleBtn.classList.toggle('active', mostrarInfoFotos);
+    }
+    
+    // Re-renderizar fotos
+    mostrarFotos();
+}
+
+// Inicializar drag & drop para reordenar fotos
+function inicializarDragAndDrop() {
+    const fotosList = document.getElementById('fotosList');
+    if (!fotosList) return;
+    
+    const items = fotosList.querySelectorAll('.foto-item');
+    let draggedElement = null;
+    let draggedIndex = null;
+    
+    items.forEach((item, index) => {
+        item.addEventListener('dragstart', (e) => {
+            draggedElement = item;
+            draggedIndex = index;
+            item.style.opacity = '0.5';
+            item.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', index.toString());
+        });
+        
+        item.addEventListener('dragend', () => {
+            if (draggedElement) {
+                draggedElement.style.opacity = '';
+                draggedElement.classList.remove('dragging');
+            }
+            draggedElement = null;
+            draggedIndex = null;
+        });
+        
+        item.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            
+            if (!draggedElement || draggedElement === item) return;
+            
+            const rect = item.getBoundingClientRect();
+            const next = (e.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+            
+            if (next) {
+                fotosList.insertBefore(draggedElement, item.nextSibling);
+            } else {
+                fotosList.insertBefore(draggedElement, item);
+            }
+        });
+        
+        item.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            
+            if (!draggedElement || draggedElement === item || draggedIndex === null) return;
+            
+            // Obtener nuevo índice basado en la posición actual en el DOM después del movimiento
+            const allItems = Array.from(fotosList.querySelectorAll('.foto-item'));
+            const newIndex = allItems.indexOf(draggedElement);
+            
+            if (draggedIndex !== newIndex && newIndex !== -1) {
+                // Reordenar array
+                const [movedItem] = fotosSubidas.splice(draggedIndex, 1);
+                fotosSubidas.splice(newIndex, 0, movedItem);
+                
+                // Actualizar metadata y guardar
+                if (archivoActual) {
+                    metadata[archivoActual.pathname] = {
+                        ...metadata[archivoActual.pathname],
+                        fotos: fotosSubidas
+                    };
+                    await guardarMetadata();
+                }
+                
+                // Re-renderizar
+                mostrarFotos();
+            }
+        });
+    });
 }
 
 // Ampliar foto (modal)
@@ -817,6 +911,15 @@ function inicializarLayoutButtons() {
             cambiarLayout(btn.dataset.layout);
         });
     });
+    
+    // Inicializar botón toggle de información
+    const toggleBtn = document.getElementById('toggleInfoBtn');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            toggleMostrarInfo();
+        });
+        toggleBtn.classList.toggle('active', mostrarInfoFotos);
+    }
 }
 
 // Inicializar botón de captura
