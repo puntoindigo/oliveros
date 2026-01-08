@@ -23,7 +23,10 @@ if (sessionStorage.getItem('adminLoggedIn') !== 'true') {
 // Logout
 const logoutBtn = document.getElementById('logoutBtn');
 if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
+    logoutBtn.addEventListener('click', async () => {
+        const confirmado = await mostrarConfirmacion('¿Estás seguro de cerrar sesión?', 'Cerrar Sesión');
+        if (!confirmado) return;
+        
         sessionStorage.removeItem('adminLoggedIn');
         sessionStorage.removeItem('adminUser');
         window.location.href = '/admin/index.html';
