@@ -739,7 +739,22 @@ function inicializarDragAndDrop() {
             });
         });
         
+        item.addEventListener('mousedown', (e) => {
+            // Solo iniciar drag si no es un click en botones o textareas
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'TEXTAREA' || e.target.closest('button') || e.target.closest('textarea')) {
+                return;
+            }
+            // Marcar que se puede iniciar drag
+            item.dataset.canDrag = 'true';
+        });
+        
         item.addEventListener('dragstart', (e) => {
+            // Si no se puede hacer drag, cancelar
+            if (item.dataset.canDrag !== 'true') {
+                e.preventDefault();
+                return;
+            }
+            
             console.log('🚀 Drag start en item', index, e.target);
             
             draggedElement = item;
@@ -762,9 +777,11 @@ function inicializarDragAndDrop() {
         });
         
         item.addEventListener('dragend', (e) => {
+            console.log('🏁 Drag end');
             if (draggedElement) {
                 draggedElement.style.opacity = '';
                 draggedElement.classList.remove('dragging');
+                draggedElement.dataset.canDrag = '';
             }
             if (placeholder && placeholder.parentNode) {
                 placeholder.parentNode.removeChild(placeholder);
@@ -772,6 +789,11 @@ function inicializarDragAndDrop() {
             draggedElement = null;
             draggedIndex = null;
             placeholder = null;
+        });
+        
+        item.addEventListener('mouseup', () => {
+            // Reset canDrag después de soltar
+            item.dataset.canDrag = '';
         });
         
         item.addEventListener('dragover', (e) => {
