@@ -17,7 +17,7 @@ const VIDEOS_LIST = [
 
 // Verificar autenticación
 if (sessionStorage.getItem('adminLoggedIn') !== 'true') {
-    window.location.href = '/admin/index.html';
+    window.location.href = '/admin';
 }
 
 // Estado
@@ -43,13 +43,47 @@ document.addEventListener('click', (e) => {
     }
 });
 
+// Mostrar modal de confirmación
+function mostrarConfirmacion(mensaje, titulo = 'Confirmar') {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('confirmModal');
+        const title = document.getElementById('confirmModalTitle');
+        const message = document.getElementById('confirmModalMessage');
+        const btnCancel = document.getElementById('confirmModalCancel');
+        const btnOk = document.getElementById('confirmModalOk');
+        
+        title.textContent = titulo;
+        message.textContent = mensaje;
+        modal.style.display = 'flex';
+        
+        const cleanup = () => {
+            modal.style.display = 'none';
+            btnCancel.onclick = null;
+            btnOk.onclick = null;
+        };
+        
+        btnCancel.onclick = () => {
+            cleanup();
+            resolve(false);
+        };
+        
+        btnOk.onclick = () => {
+            cleanup();
+            resolve(true);
+        };
+    });
+}
+
 // Logout
 const logoutBtn = document.getElementById('logoutBtn');
 if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
+    logoutBtn.addEventListener('click', async () => {
+        const confirmado = await mostrarConfirmacion('¿Estás seguro de cerrar sesión?', 'Cerrar Sesión');
+        if (!confirmado) return;
+        
         sessionStorage.removeItem('adminLoggedIn');
         sessionStorage.removeItem('adminUser');
-        window.location.href = '/admin/index.html';
+        window.location.href = '/admin';
     });
 }
 

@@ -29,7 +29,7 @@ if (logoutBtn) {
         
         sessionStorage.removeItem('adminLoggedIn');
         sessionStorage.removeItem('adminUser');
-        window.location.href = '/admin/index.html';
+        window.location.href = '/admin';
     });
 }
 

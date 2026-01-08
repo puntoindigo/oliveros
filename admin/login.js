@@ -59,9 +59,9 @@ if (loginForm) {
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
             
             if (isMobile) {
-                window.location.href = '/admin/galeria_mobile.html';
+                window.location.href = '/admin/galeria-mobile';
             } else {
-                window.location.href = '/admin/galeria.html';
+                window.location.href = '/admin/galeria';
             }
         } else {
             if (errorDiv) {
@@ -82,7 +82,12 @@ if (loginForm) {
 
 // Verificar si ya está logueado
 if (sessionStorage.getItem('adminLoggedIn') === 'true') {
-    window.location.href = '/admin/galeria.html';
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+    if (isMobile) {
+        window.location.href = '/admin/galeria-mobile';
+    } else {
+        window.location.href = '/admin/galeria';
+    }
 }
 
 // Limpiar URL si tiene parámetros
