@@ -986,11 +986,28 @@ function inicializarDragAndDrop() {
             
             if (draggedIndex !== newIndex) {
                 console.log('🔄 Reordenando fotos...');
+                
                 // Reordenar array
                 const [movedItem] = fotosSubidas.splice(draggedIndex, 1);
                 fotosSubidas.splice(newIndex, 0, movedItem);
                 
                 console.log('✅ Array reordenado:', fotosSubidas.map((f, i) => i + ':' + f.nombre));
+                
+                // Mover elemento en el DOM sin re-renderizar todo
+                if (placeholder && placeholder.parentNode) {
+                    // Reemplazar placeholder con el elemento arrastrado
+                    placeholder.parentNode.replaceChild(draggedElement, placeholder);
+                }
+                
+                // Restaurar estilo del elemento
+                draggedElement.style.opacity = '';
+                draggedElement.classList.remove('dragging');
+                
+                // Actualizar data-index de todos los elementos para mantener consistencia
+                const allItems = fotosList.querySelectorAll('.foto-item');
+                allItems.forEach((item, idx) => {
+                    item.dataset.index = idx.toString();
+                });
                 
                 // Actualizar metadata y guardar automáticamente
                 if (archivoActual) {
@@ -1000,9 +1017,6 @@ function inicializarDragAndDrop() {
                     };
                     await guardarMetadata();
                 }
-                
-                // Re-renderizar
-                mostrarFotos();
             } else {
                 console.log('⚠️ No hay cambio de posición');
                 // Si no hubo cambio, solo remover placeholder y restaurar
