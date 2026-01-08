@@ -45,6 +45,33 @@
           "value": "bytes"
         }
       ]
+    },
+    {
+      "source": "/admin/fotos/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/admin/(.*\\.(js|css|json))",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    },
+    {
+      "source": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     }
   ],
   "rewrites": [
@@ -55,6 +82,18 @@
     {
       "source": "/admin/videos/(.*)",
       "destination": "/admin/videos/$1"
+    },
+    {
+      "source": "/admin/galeria",
+      "destination": "/admin/galeria.html"
+    },
+    {
+      "source": "/admin/galeria-mobile",
+      "destination": "/admin/galeria_mobile.html"
+    },
+    {
+      "source": "/admin/pago",
+      "destination": "/admin/pago.html"
     },
     {
       "source": "/admin",

@@ -767,6 +767,16 @@ window.ampliarFoto = function(index) {
         modal.innerHTML = `
             <div class="foto-modal-content">
                 <button class="foto-modal-close" onclick="cerrarFotoModal()">×</button>
+                <button class="foto-modal-nav foto-modal-prev" onclick="navegarFoto(-1)" id="fotoModalPrev" style="display: none;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <button class="foto-modal-nav foto-modal-next" onclick="navegarFoto(1)" id="fotoModalNext" style="display: none;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
                 <img id="fotoModalImg" src="" alt="">
                 <div class="foto-modal-info">
                     <p id="fotoModalNombre"></p>
@@ -784,7 +794,34 @@ window.ampliarFoto = function(index) {
     document.getElementById('fotoModalComentario').value = foto.comentario || '';
     document.getElementById('fotoModalComentario').placeholder = 'Notas';
     modal.dataset.index = index;
+    
+    // Mostrar/ocultar botones de navegación
+    const prevBtn = document.getElementById('fotoModalPrev');
+    const nextBtn = document.getElementById('fotoModalNext');
+    if (prevBtn && nextBtn) {
+        prevBtn.style.display = index > 0 ? 'flex' : 'none';
+        nextBtn.style.display = index < fotosSubidas.length - 1 ? 'flex' : 'none';
+    }
+    
     modal.style.display = 'flex';
+};
+
+// Navegar entre fotos en el modal
+window.navegarFoto = function(direction) {
+    const modal = document.getElementById('fotoModal');
+    if (!modal) return;
+    
+    const currentIndex = parseInt(modal.dataset.index);
+    const newIndex = currentIndex + direction;
+    
+    if (newIndex >= 0 && newIndex < fotosSubidas.length) {
+        // Guardar comentario actual antes de cambiar
+        const comentario = document.getElementById('fotoModalComentario').value;
+        actualizarComentarioFoto(currentIndex, comentario);
+        
+        // Abrir nueva foto
+        ampliarFoto(newIndex);
+    }
 };
 
 window.cerrarFotoModal = function() {
@@ -802,10 +839,17 @@ window.actualizarComentarioFotoDesdeModal = function() {
     actualizarComentarioFoto(index, comentario);
 };
 
-// Cerrar modal con ESC
+// Cerrar modal con ESC y navegar con flechas
 document.addEventListener('keydown', (e) => {
+    const modal = document.getElementById('fotoModal');
+    if (!modal || modal.style.display === 'none') return;
+    
     if (e.key === 'Escape') {
         cerrarFotoModal();
+    } else if (e.key === 'ArrowLeft') {
+        navegarFoto(-1);
+    } else if (e.key === 'ArrowRight') {
+        navegarFoto(1);
     }
 });
 
