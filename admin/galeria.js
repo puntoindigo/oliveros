@@ -711,6 +711,87 @@ function inicializarDragAndDrop() {
     let draggedIndex = null;
     let placeholder = null;
     
+    // Agregar drop al contenedor padre también
+    fotosList.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.dataTransfer.dropEffect = 'move';
+    });
+    
+    fotosList.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        console.log('🎯 Drop en contenedor, draggedElement:', draggedElement, 'placeholder:', placeholder);
+        
+        if (!draggedElement || draggedIndex === null) {
+            console.log('❌ Drop cancelado: no hay elemento arrastrado');
+            return;
+        }
+        
+        // Si no hay placeholder, usar la posición del último elemento
+        if (!placeholder) {
+            console.log('⚠️ No hay placeholder, creando uno al final');
+            placeholder = createPlaceholder();
+            const itemRect = draggedElement.getBoundingClientRect();
+            placeholder.style.width = itemRect.width + 'px';
+            placeholder.style.height = itemRect.height + 'px';
+            placeholder.style.minHeight = itemRect.height + 'px';
+            fotosList.appendChild(placeholder);
+        }
+        
+        // Obtener nuevo índice basado en la posición del placeholder
+        const allChildren = Array.from(fotosList.children);
+        const placeholderIndex = allChildren.indexOf(placeholder);
+        
+        // Contar solo los foto-item (excluyendo placeholder y el elemento arrastrado)
+        let newIndex = 0;
+        for (let i = 0; i < placeholderIndex; i++) {
+            const child = allChildren[i];
+            if (child.classList.contains('foto-item') && child !== draggedElement) {
+                newIndex++;
+            }
+        }
+        
+        console.log('📊 Índices - Original:', draggedIndex, 'Nuevo:', newIndex, 'Placeholder en:', placeholderIndex);
+        
+        if (draggedIndex !== newIndex) {
+            console.log('🔄 Reordenando fotos...');
+            // Reordenar array
+            const [movedItem] = fotosSubidas.splice(draggedIndex, 1);
+            fotosSubidas.splice(newIndex, 0, movedItem);
+            
+            console.log('✅ Array reordenado:', fotosSubidas.map((f, i) => i + ':' + (f.nombre || 'foto' + i)));
+            
+            // Actualizar metadata y guardar automáticamente
+            if (archivoActual) {
+                metadata[archivoActual.pathname] = {
+                    ...metadata[archivoActual.pathname],
+                    fotos: fotosSubidas
+                };
+                await guardarMetadata();
+            }
+            
+            // Re-renderizar
+            mostrarFotos();
+        } else {
+            console.log('⚠️ No hay cambio de posición');
+            // Si no hubo cambio, solo remover placeholder y restaurar
+            if (placeholder && placeholder.parentNode) {
+                placeholder.parentNode.removeChild(placeholder);
+            }
+            if (draggedElement) {
+                draggedElement.style.opacity = '';
+                draggedElement.classList.remove('dragging');
+            }
+        }
+        
+        // Limpiar
+        draggedElement = null;
+        draggedIndex = null;
+        placeholder = null;
+    });
+    
     // Crear placeholder visual
     function createPlaceholder() {
         const ph = document.createElement('div');
