@@ -765,18 +765,18 @@ window.ampliarFoto = function(index) {
         modal.id = 'fotoModal';
         modal.className = 'foto-modal';
         modal.innerHTML = `
+            <button class="foto-modal-nav foto-modal-prev" onclick="navegarFoto(-1)" id="fotoModalPrev" style="display: none;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <button class="foto-modal-nav foto-modal-next" onclick="navegarFoto(1)" id="fotoModalNext" style="display: none;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
             <div class="foto-modal-content">
                 <button class="foto-modal-close" onclick="cerrarFotoModal()">×</button>
-                <button class="foto-modal-nav foto-modal-prev" onclick="navegarFoto(-1)" id="fotoModalPrev" style="display: none;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="15 18 9 12 15 6"></polyline>
-                    </svg>
-                </button>
-                <button class="foto-modal-nav foto-modal-next" onclick="navegarFoto(1)" id="fotoModalNext" style="display: none;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                    </svg>
-                </button>
                 <img id="fotoModalImg" src="" alt="">
                 <div class="foto-modal-info">
                     <p id="fotoModalNombre"></p>

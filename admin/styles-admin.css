@@ -863,25 +863,6 @@ h1, h2, h3, h4 {
     flex-direction: column;
 }
 
-.foto-modal-content::before,
-.foto-modal-content::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 60px;
-    z-index: 10001;
-    pointer-events: none;
-}
-
-.foto-modal-content::before {
-    left: 0;
-}
-
-.foto-modal-content::after {
-    right: 0;
-}
-
 .foto-modal-content img {
     max-width: 100%;
     max-height: 70vh;
@@ -928,7 +909,7 @@ h1, h2, h3, h4 {
 }
 
 .foto-modal-nav {
-    position: absolute;
+    position: fixed;
     top: 50%;
     transform: translateY(-50%);
     background: rgba(44, 85, 48, 0.9);
