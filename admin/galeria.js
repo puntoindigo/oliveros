@@ -760,20 +760,27 @@ function inicializarDragAndDrop() {
             draggedElement = item;
             draggedIndex = parseInt(item.dataset.index) || index;
             
-            // Ocultar elemento original y crear placeholder
+            // Crear placeholder ANTES de modificar el elemento
+            placeholder = createPlaceholder();
+            const itemRect = item.getBoundingClientRect();
+            placeholder.style.width = itemRect.width + 'px';
+            placeholder.style.height = itemRect.height + 'px';
+            placeholder.style.minHeight = itemRect.height + 'px';
+            
+            // Insertar placeholder después del elemento (no antes)
+            if (item.nextSibling) {
+                item.parentNode.insertBefore(placeholder, item.nextSibling);
+            } else {
+                item.parentNode.appendChild(placeholder);
+            }
+            
+            // Ocultar elemento original DESPUÉS de crear placeholder
             item.style.opacity = '0.3';
             item.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('text/plain', draggedIndex.toString());
             
-            // Crear placeholder con el mismo tamaño
-            placeholder = createPlaceholder();
-            const itemRect = item.getBoundingClientRect();
-            placeholder.style.width = itemRect.width + 'px';
-            placeholder.style.height = itemRect.height + 'px';
-            item.parentNode.insertBefore(placeholder, item);
-            
-            console.log('✅ Drag iniciado, placeholder creado');
+            console.log('✅ Drag iniciado, placeholder creado en posición:', Array.from(item.parentNode.children).indexOf(placeholder));
         });
         
         item.addEventListener('dragend', (e) => {
@@ -798,6 +805,7 @@ function inicializarDragAndDrop() {
         
         item.addEventListener('dragover', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             e.dataTransfer.dropEffect = 'move';
             
             if (!draggedElement || draggedElement === item || !placeholder) return;
@@ -810,6 +818,17 @@ function inicializarDragAndDrop() {
             } else if (!next && item.previousSibling !== placeholder) {
                 fotosList.insertBefore(placeholder, item);
             }
+        });
+        
+        item.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            if (draggedElement && draggedElement !== item) {
+                item.classList.add('drag-over');
+            }
+        });
+        
+        item.addEventListener('dragleave', (e) => {
+            item.classList.remove('drag-over');
         });
         
         item.addEventListener('drop', async (e) => {
