@@ -35,14 +35,6 @@
     "comentarios": "PISOS PAREDES Y BAÑO\nTIENE HELADERA, COCINA, SANITARIOS SIN INSTALAR\n\nNO TIENE SOMMIERS\n\nHUMEDAD EN LAS PAREDES",
     "fotos": [
       {
-        "id": 1767628133647.173,
-        "nombre": "captura_cab2_2026-01-05T15-48-50-268Z.png",
-        "url": "https://raw.githubusercontent.com/puntoindigo/oliveros/main/admin/fotos/videos_cab2.mp4_1767628132440.png",
-        "path": "admin/fotos/videos_cab2.mp4_1767628132440.png",
-        "comentario": "baño1",
-        "fechaSubida": "2026-01-05T15:48:53.647Z"
-      },
-      {
         "id": 1767885767137.8018,
         "nombre": "captura_cab2_2026-01-08T15-22-44-777Z.png",
         "url": "https://raw.githubusercontent.com/puntoindigo/oliveros/main/admin/fotos/videos_cab2.mp4_1767885766469.png",
@@ -65,6 +57,14 @@
         "path": "admin/fotos/videos_cab2.mp4_1767886457795.jpg",
         "comentario": "",
         "fechaSubida": "2026-01-08T15:34:18.824Z"
+      },
+      {
+        "id": 1767628133647.173,
+        "nombre": "captura_cab2_2026-01-05T15-48-50-268Z.png",
+        "url": "https://raw.githubusercontent.com/puntoindigo/oliveros/main/admin/fotos/videos_cab2.mp4_1767628132440.png",
+        "path": "admin/fotos/videos_cab2.mp4_1767628132440.png",
+        "comentario": "baño1",
+        "fechaSubida": "2026-01-05T15:48:53.647Z"
       },
       {
         "id": 1767885756074.5315,
