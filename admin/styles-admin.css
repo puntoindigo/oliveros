@@ -584,7 +584,11 @@ h1, h2, h3, h4 {
 }
 
 .foto-info-hidden {
-    display: none !important;
+    visibility: hidden;
+    height: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
 }
 
 .foto-nombre-small {

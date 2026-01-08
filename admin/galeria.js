@@ -97,7 +97,7 @@ async function guardarMetadata() {
 
         if (response.ok) {
             const result = await response.json();
-            mostrarEstado('success', '✅ Cambios guardados correctamente');
+            // Cambios guardados automáticamente, no mostrar toast
         } else {
             const errorData = await response.json();
             throw new Error(errorData.details || errorData.mensaje || 'Error al guardar');
@@ -709,57 +709,86 @@ function inicializarDragAndDrop() {
     const items = fotosList.querySelectorAll('.foto-item');
     let draggedElement = null;
     let draggedIndex = null;
+    let placeholder = null;
+    
+    // Crear placeholder visual
+    function createPlaceholder() {
+        const ph = document.createElement('div');
+        ph.className = 'drag-placeholder';
+        ph.style.cssText = `
+            border: 2px dashed #2c5530;
+            border-radius: 8px;
+            background: rgba(44, 85, 48, 0.1);
+            min-height: 150px;
+            transition: all 0.2s;
+        `;
+        return ph;
+    }
     
     items.forEach((item, index) => {
         item.addEventListener('dragstart', (e) => {
             draggedElement = item;
             draggedIndex = index;
-            item.style.opacity = '0.5';
+            item.style.opacity = '0.4';
             item.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('text/plain', index.toString());
+            
+            // Crear placeholder
+            placeholder = createPlaceholder();
+            item.parentNode.insertBefore(placeholder, item);
+            item.style.position = 'absolute';
+            item.style.width = item.offsetWidth + 'px';
         });
         
         item.addEventListener('dragend', () => {
             if (draggedElement) {
                 draggedElement.style.opacity = '';
+                draggedElement.style.position = '';
+                draggedElement.style.width = '';
                 draggedElement.classList.remove('dragging');
+            }
+            if (placeholder && placeholder.parentNode) {
+                placeholder.parentNode.removeChild(placeholder);
             }
             draggedElement = null;
             draggedIndex = null;
+            placeholder = null;
         });
         
         item.addEventListener('dragover', (e) => {
             e.preventDefault();
             e.dataTransfer.dropEffect = 'move';
             
-            if (!draggedElement || draggedElement === item) return;
+            if (!draggedElement || draggedElement === item || !placeholder) return;
             
             const rect = item.getBoundingClientRect();
             const next = (e.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
             
-            if (next) {
-                fotosList.insertBefore(draggedElement, item.nextSibling);
-            } else {
-                fotosList.insertBefore(draggedElement, item);
+            if (next && item.nextSibling !== placeholder) {
+                fotosList.insertBefore(placeholder, item.nextSibling);
+            } else if (!next && item.previousSibling !== placeholder) {
+                fotosList.insertBefore(placeholder, item);
             }
         });
         
         item.addEventListener('drop', async (e) => {
             e.preventDefault();
             
-            if (!draggedElement || draggedElement === item || draggedIndex === null) return;
+            if (!draggedElement || draggedElement === item || draggedIndex === null || !placeholder) return;
             
-            // Obtener nuevo índice basado en la posición actual en el DOM después del movimiento
-            const allItems = Array.from(fotosList.querySelectorAll('.foto-item'));
-            const newIndex = allItems.indexOf(draggedElement);
+            // Obtener nuevo índice basado en la posición del placeholder
+            const allItems = Array.from(fotosList.querySelectorAll('.foto-item:not(.dragging)'));
+            const placeholderIndex = Array.from(fotosList.children).indexOf(placeholder);
+            const itemsBeforePlaceholder = Array.from(fotosList.children).slice(0, placeholderIndex).filter(el => el.classList.contains('foto-item'));
+            const newIndex = itemsBeforePlaceholder.length;
             
             if (draggedIndex !== newIndex && newIndex !== -1) {
                 // Reordenar array
                 const [movedItem] = fotosSubidas.splice(draggedIndex, 1);
                 fotosSubidas.splice(newIndex, 0, movedItem);
                 
-                // Actualizar metadata y guardar
+                // Actualizar metadata y guardar automáticamente
                 if (archivoActual) {
                     metadata[archivoActual.pathname] = {
                         ...metadata[archivoActual.pathname],
@@ -770,6 +799,17 @@ function inicializarDragAndDrop() {
                 
                 // Re-renderizar
                 mostrarFotos();
+            } else {
+                // Si no hubo cambio, solo remover placeholder y restaurar
+                if (placeholder && placeholder.parentNode) {
+                    placeholder.parentNode.removeChild(placeholder);
+                }
+                if (draggedElement) {
+                    draggedElement.style.opacity = '';
+                    draggedElement.style.position = '';
+                    draggedElement.style.width = '';
+                    draggedElement.classList.remove('dragging');
+                }
             }
         });
     });
