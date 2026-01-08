@@ -443,7 +443,7 @@ h1, h2, h3, h4 {
 .drop-zone {
     border: 2px dashed #ccc;
     border-radius: 8px;
-    padding: 40px 20px;
+    padding: 12px 20px;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -465,18 +465,20 @@ h1, h2, h3, h4 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 6px;
     color: #666;
 }
 
 .drop-zone-content svg {
     color: #2c5530;
     opacity: 0.6;
+    width: 24px;
+    height: 24px;
 }
 
 .drop-zone-content p {
     margin: 0;
-    font-size: 1rem;
+    font-size: 0.75rem;
 }
 
 .drop-zone-hint {
