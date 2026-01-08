@@ -761,30 +761,11 @@ function inicializarDragAndDrop() {
             draggedElement = item;
             draggedIndex = parseInt(item.dataset.index) || index;
             
-            // Ocultar elemento original primero
+            // Solo ocultar visualmente, no modificar el DOM todavía
             item.style.opacity = '0.3';
             item.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('text/plain', draggedIndex.toString());
-            
-            // Crear placeholder después de un pequeño delay para que el drag no se cancele
-            setTimeout(() => {
-                if (draggedElement === item && !placeholder) {
-                    placeholder = createPlaceholder();
-                    const itemRect = item.getBoundingClientRect();
-                    placeholder.style.width = itemRect.width + 'px';
-                    placeholder.style.height = itemRect.height + 'px';
-                    placeholder.style.minHeight = itemRect.height + 'px';
-                    
-                    // Insertar placeholder después del elemento
-                    if (item.nextSibling) {
-                        item.parentNode.insertBefore(placeholder, item.nextSibling);
-                    } else {
-                        item.parentNode.appendChild(placeholder);
-                    }
-                    console.log('✅ Placeholder creado en posición:', Array.from(item.parentNode.children).indexOf(placeholder));
-                }
-            }, 10);
             
             console.log('✅ Drag iniciado');
         });
@@ -814,14 +795,30 @@ function inicializarDragAndDrop() {
             e.stopPropagation();
             e.dataTransfer.dropEffect = 'move';
             
-            if (!draggedElement || draggedElement === item || !placeholder) return;
+            if (!draggedElement || draggedElement === item) return;
+            
+            // Crear placeholder si no existe
+            if (!placeholder) {
+                placeholder = createPlaceholder();
+                const itemRect = draggedElement.getBoundingClientRect();
+                placeholder.style.width = itemRect.width + 'px';
+                placeholder.style.height = itemRect.height + 'px';
+                placeholder.style.minHeight = itemRect.height + 'px';
+                
+                // Insertar placeholder después del elemento arrastrado
+                if (draggedElement.nextSibling) {
+                    fotosList.insertBefore(placeholder, draggedElement.nextSibling);
+                } else {
+                    fotosList.appendChild(placeholder);
+                }
+            }
             
             const rect = item.getBoundingClientRect();
             const next = (e.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
             
-            if (next && item.nextSibling !== placeholder) {
+            if (next && item.nextSibling !== placeholder && item !== draggedElement) {
                 fotosList.insertBefore(placeholder, item.nextSibling);
-            } else if (!next && item.previousSibling !== placeholder) {
+            } else if (!next && item.previousSibling !== placeholder && item !== draggedElement) {
                 fotosList.insertBefore(placeholder, item);
             }
         });
