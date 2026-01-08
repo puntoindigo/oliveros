@@ -43,14 +43,6 @@
         "fechaSubida": "2026-01-08T15:22:47.137Z"
       },
       {
-        "id": 1767885838066.4817,
-        "nombre": "captura_cab2_2026-01-08T15-23-53-243Z.png",
-        "url": "https://raw.githubusercontent.com/puntoindigo/oliveros/main/admin/fotos/videos_cab2.mp4_1767885837033.png",
-        "path": "admin/fotos/videos_cab2.mp4_1767885837033.png",
-        "comentario": "",
-        "fechaSubida": "2026-01-08T15:23:58.066Z"
-      },
-      {
         "id": 1767886458824.6895,
         "nombre": "captura_cab2_2026-01-08T15-34-16-337Z.png",
         "url": "https://raw.githubusercontent.com/puntoindigo/oliveros/main/admin/fotos/videos_cab2.mp4_1767886457795.jpg",
@@ -73,6 +65,14 @@
         "path": "admin/fotos/videos_cab2.mp4_1767885754991.png",
         "comentario": "",
         "fechaSubida": "2026-01-08T15:22:36.074Z"
+      },
+      {
+        "id": 1767885838066.4817,
+        "nombre": "captura_cab2_2026-01-08T15-23-53-243Z.png",
+        "url": "https://raw.githubusercontent.com/puntoindigo/oliveros/main/admin/fotos/videos_cab2.mp4_1767885837033.png",
+        "path": "admin/fotos/videos_cab2.mp4_1767885837033.png",
+        "comentario": "",
+        "fechaSubida": "2026-01-08T15:23:58.066Z"
       }
     ],
     "fechaActualizacion": "2026-01-08T16:54:16.977Z"
