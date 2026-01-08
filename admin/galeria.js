@@ -165,6 +165,9 @@ function seleccionarArchivo(index) {
     document.getElementById('archivoTitulo').value = meta.titulo || nombreSinExtension;
     document.getElementById('archivoComentarios').value = meta.comentarios || '';
     
+    // Inicializar guardado automático
+    inicializarGuardadoAutomatico();
+    
     // Cargar fotos
     fotosSubidas = Array.isArray(meta.fotos) ? meta.fotos : [];
     console.log('📸 Fotos cargadas para', archivoActual.pathname, ':', fotosSubidas.length);
