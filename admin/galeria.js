@@ -729,23 +729,43 @@ function inicializarDragAndDrop() {
         item.addEventListener('dragstart', (e) => {
             draggedElement = item;
             draggedIndex = index;
-            item.style.opacity = '0.4';
+            
+            // Crear imagen personalizada para el drag (mismo tamaño que el elemento)
+            const dragImage = item.cloneNode(true);
+            dragImage.style.cssText = `
+                position: absolute;
+                top: -1000px;
+                left: -1000px;
+                width: ${item.offsetWidth}px;
+                opacity: 0.8;
+                pointer-events: none;
+            `;
+            document.body.appendChild(dragImage);
+            e.dataTransfer.setDragImage(dragImage, item.offsetWidth / 2, item.offsetHeight / 2);
+            
+            // Ocultar elemento original y crear placeholder
+            item.style.opacity = '0.3';
             item.classList.add('dragging');
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('text/plain', index.toString());
             
-            // Crear placeholder
+            // Crear placeholder con el mismo tamaño
             placeholder = createPlaceholder();
+            placeholder.style.width = item.offsetWidth + 'px';
+            placeholder.style.height = item.offsetHeight + 'px';
             item.parentNode.insertBefore(placeholder, item);
-            item.style.position = 'absolute';
-            item.style.width = item.offsetWidth + 'px';
+            
+            // Remover imagen temporal después de un momento
+            setTimeout(() => {
+                if (dragImage.parentNode) {
+                    dragImage.parentNode.removeChild(dragImage);
+                }
+            }, 0);
         });
         
         item.addEventListener('dragend', () => {
             if (draggedElement) {
                 draggedElement.style.opacity = '';
-                draggedElement.style.position = '';
-                draggedElement.style.width = '';
                 draggedElement.classList.remove('dragging');
             }
             if (placeholder && placeholder.parentNode) {
@@ -806,8 +826,6 @@ function inicializarDragAndDrop() {
                 }
                 if (draggedElement) {
                     draggedElement.style.opacity = '';
-                    draggedElement.style.position = '';
-                    draggedElement.style.width = '';
                     draggedElement.classList.remove('dragging');
                 }
             }
