@@ -421,12 +421,78 @@ async function manejarArchivos(files) {
     }
 }
 
+// Comprimir imagen manteniendo alta calidad para impresión
+async function comprimirImagen(file, maxSizeBytes = 3.5 * 1024 * 1024) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Mantener dimensiones originales para calidad de impresión
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                // Dibujar imagen en canvas
+                ctx.drawImage(img, 0, 0);
+                
+                // Intentar diferentes niveles de compresión si es necesario
+                const intentarComprimir = (calidad) => {
+                    canvas.toBlob((blob) => {
+                        if (!blob) {
+                            reject(new Error('Error al comprimir la imagen'));
+                            return;
+                        }
+                        
+                        // Si el tamaño es aceptable o la calidad ya es muy baja, usar este blob
+                        if (blob.size <= maxSizeBytes || calidad <= 0.7) {
+                            const nombreOriginal = file.name;
+                            const extension = nombreOriginal.split('.').pop() || 'png';
+                            const nuevoNombre = nombreOriginal.replace(/\.[^.]+$/, '') + '.jpg';
+                            const nuevoFile = new File([blob], nuevoNombre, { type: 'image/jpeg' });
+                            resolve(nuevoFile);
+                        } else {
+                            // Reducir calidad y volver a intentar
+                            intentarComprimir(calidad - 0.05);
+                        }
+                    }, 'image/jpeg', calidad);
+                };
+                
+                // Empezar con calidad alta (0.95) para mantener calidad de impresión
+                intentarComprimir(0.95);
+            };
+            img.onerror = () => reject(new Error('Error cargando la imagen'));
+            img.src = e.target.result;
+        };
+        reader.onerror = () => reject(new Error('Error leyendo el archivo'));
+        reader.readAsDataURL(file);
+    });
+}
+
 // Subir foto a GitHub
 async function subirFoto(file) {
     // Verificar tamaño del archivo (máximo 10MB para evitar problemas)
     const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
         throw new Error(`El archivo es demasiado grande (${(file.size / 1024 / 1024).toFixed(2)}MB). El tamaño máximo es 10MB.`);
+    }
+    
+    // Si el archivo es mayor a 3.5MB, comprimirlo manteniendo alta calidad
+    let archivoFinal = file;
+    const limiteCompresion = 3.5 * 1024 * 1024; // 3.5MB (dejando margen para Base64)
+    
+    if (file.size > limiteCompresion) {
+        console.log(`📦 Comprimiendo imagen de ${(file.size / 1024 / 1024).toFixed(2)}MB manteniendo alta calidad...`);
+        mostrarEstado('info', `Comprimiendo imagen para subirla (manteniendo alta calidad)...`);
+        try {
+            archivoFinal = await comprimirImagen(file, limiteCompresion);
+            console.log(`✅ Imagen comprimida a ${(archivoFinal.size / 1024 / 1024).toFixed(2)}MB`);
+        } catch (error) {
+            console.error('Error comprimiendo imagen:', error);
+            // Si falla la compresión, intentar subir el original de todas formas
+        }
     }
     
     // Convertir archivo a base64
@@ -443,8 +509,8 @@ async function subirFoto(file) {
                     },
                     body: JSON.stringify({
                         file: base64,
-                        fileName: file.name,
-                        fileType: file.type,
+                        fileName: archivoFinal.name,
+                        fileType: archivoFinal.type,
                         archivoPath: archivoActual.pathname
                     })
                 });
@@ -452,7 +518,7 @@ async function subirFoto(file) {
                 if (!response.ok) {
                     // Manejar diferentes tipos de errores
                     if (response.status === 413) {
-                        throw new Error('El archivo es demasiado grande. Intenta con una imagen más pequeña o comprímela antes de subirla.');
+                        throw new Error('El archivo es demasiado grande incluso después de comprimirlo. Intenta con una imagen más pequeña.');
                     }
                     
                     let errorMessage = 'Error al subir foto';
@@ -472,7 +538,7 @@ async function subirFoto(file) {
             }
         };
         reader.onerror = () => reject(new Error('Error al leer el archivo'));
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(archivoFinal);
     });
 }
 
