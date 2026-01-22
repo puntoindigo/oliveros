@@ -84,33 +84,46 @@
               body: JSON.stringify({ token: data.token })
             });
             
+            const result = await response.json();
+            
+            // Verificar respuesta HTTP y contenido
             if (!response.ok) {
-              throw new Error('Error validando token');
+              // Si es 403, el usuario no tiene acceso
+              if (response.status === 403) {
+                throw new Error('Tu cuenta no tiene acceso a esta aplicación. Contactá al administrador.');
+              }
+              // Si es 401, token inválido
+              if (response.status === 401) {
+                throw new Error('Token inválido o expirado. Por favor, intentá nuevamente.');
+              }
+              throw new Error(result.error || 'Error validando token');
             }
             
-            const result = await response.json();
-            if (result.authenticated) {
-              // Guardar sesión
-              sessionStorage.setItem('adminLoggedIn', 'true');
-              sessionStorage.setItem('adminUser', result.user.email);
-              
-              // Redirigir
-              const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
-              if (isMobile) {
-                window.location.href = '/admin/galeria-mobile';
-              } else {
-                window.location.href = '/admin/galeria';
-              }
+            // Verificar que result.authenticated sea true
+            if (!result.authenticated) {
+              throw new Error('Acceso denegado. Tu cuenta no tiene permisos para esta aplicación.');
+            }
+            
+            // Guardar sesión
+            sessionStorage.setItem('adminLoggedIn', 'true');
+            sessionStorage.setItem('adminUser', result.user.email);
+            
+            // Redirigir
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            if (isMobile) {
+              window.location.href = '/admin/galeria-mobile';
             } else {
-              throw new Error('Acceso denegado');
+              window.location.href = '/admin/galeria';
             }
           } catch (error) {
             console.error('Error:', error);
             const errorDiv = document.getElementById('loginError');
             if (errorDiv) {
-              errorDiv.textContent = 'Error al autenticar con Accounts. Por favor, intentá nuevamente.';
+              errorDiv.textContent = error.message || 'Error al autenticar con Accounts. Por favor, intentá nuevamente.';
               errorDiv.classList.add('show');
             }
+            // IMPORTANTE: No redirigir si hay error
+            // El usuario debe quedarse en la página de login
           }
         },
         onError: (error) => {
