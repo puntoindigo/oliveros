@@ -90,6 +90,16 @@
       
       window.AccountsLoginBeta01 = {
         onSuccess: async (data) => {
+          // Enviar ACK inmediatamente para que el popup se cierre
+          // El popup espera el ACK antes de cerrarse
+          if (window.opener && accountsPopup) {
+            try {
+              accountsPopup.postMessage({ type: 'accounts-ack', received: 'accounts-login' }, '*');
+            } catch (e) {
+              console.warn('No se pudo enviar ACK:', e);
+            }
+          }
+          
           try {
             const response = await fetch('/api/auth/accounts', {
               method: 'POST',
@@ -101,9 +111,13 @@
             
             // Verificar respuesta HTTP y contenido
             if (!response.ok) {
-              // Cerrar popup si está abierto
+              // Cerrar popup si está abierto (por si acaso)
               if (accountsPopup && !accountsPopup.closed) {
-                accountsPopup.close();
+                try {
+                  accountsPopup.close();
+                } catch (e) {
+                  // Ignorar errores al cerrar
+                }
               }
               
               // Si es 403, el usuario no tiene acceso
@@ -121,14 +135,22 @@
             if (!result.authenticated) {
               // Cerrar popup si está abierto
               if (accountsPopup && !accountsPopup.closed) {
-                accountsPopup.close();
+                try {
+                  accountsPopup.close();
+                } catch (e) {
+                  // Ignorar errores al cerrar
+                }
               }
               throw new Error('Acceso denegado. Tu cuenta no tiene permisos para esta aplicación.');
             }
             
-            // Cerrar popup antes de redirigir
+            // Cerrar popup antes de redirigir (por si acaso)
             if (accountsPopup && !accountsPopup.closed) {
-              accountsPopup.close();
+              try {
+                accountsPopup.close();
+              } catch (e) {
+                // Ignorar errores al cerrar
+              }
             }
             
             // Guardar sesión
@@ -147,7 +169,11 @@
             
             // Cerrar popup si está abierto
             if (accountsPopup && !accountsPopup.closed) {
-              accountsPopup.close();
+              try {
+                accountsPopup.close();
+              } catch (e) {
+                // Ignorar errores al cerrar
+              }
             }
             
             const errorDiv = document.getElementById('loginError');
@@ -164,7 +190,11 @@
           
           // Cerrar popup si está abierto
           if (accountsPopup && !accountsPopup.closed) {
-            accountsPopup.close();
+            try {
+              accountsPopup.close();
+            } catch (e) {
+              // Ignorar errores al cerrar
+            }
           }
           
           const errorDiv = document.getElementById('loginError');
