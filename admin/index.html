@@ -75,6 +75,19 @@
       data-accounts-embed
     ></script>
     <script>
+      // Variable para rastrear el popup
+      let accountsPopup = null;
+      
+      // Interceptar cuando se abre el popup
+      const originalOpen = window.open;
+      window.open = function(...args) {
+        const popup = originalOpen.apply(this, args);
+        if (args[0] && args[0].includes('accounts.puntoindigo.com')) {
+          accountsPopup = popup;
+        }
+        return popup;
+      };
+      
       window.AccountsLoginBeta01 = {
         onSuccess: async (data) => {
           try {
@@ -88,6 +101,11 @@
             
             // Verificar respuesta HTTP y contenido
             if (!response.ok) {
+              // Cerrar popup si está abierto
+              if (accountsPopup && !accountsPopup.closed) {
+                accountsPopup.close();
+              }
+              
               // Si es 403, el usuario no tiene acceso
               if (response.status === 403) {
                 throw new Error('Tu cuenta no tiene acceso a esta aplicación. Contactá al administrador.');
@@ -101,7 +119,16 @@
             
             // Verificar que result.authenticated sea true
             if (!result.authenticated) {
+              // Cerrar popup si está abierto
+              if (accountsPopup && !accountsPopup.closed) {
+                accountsPopup.close();
+              }
               throw new Error('Acceso denegado. Tu cuenta no tiene permisos para esta aplicación.');
+            }
+            
+            // Cerrar popup antes de redirigir
+            if (accountsPopup && !accountsPopup.closed) {
+              accountsPopup.close();
             }
             
             // Guardar sesión
@@ -117,6 +144,12 @@
             }
           } catch (error) {
             console.error('Error:', error);
+            
+            // Cerrar popup si está abierto
+            if (accountsPopup && !accountsPopup.closed) {
+              accountsPopup.close();
+            }
+            
             const errorDiv = document.getElementById('loginError');
             if (errorDiv) {
               errorDiv.textContent = error.message || 'Error al autenticar con Accounts. Por favor, intentá nuevamente.';
@@ -128,6 +161,12 @@
         },
         onError: (error) => {
           console.error('Error de autenticación:', error.reason);
+          
+          // Cerrar popup si está abierto
+          if (accountsPopup && !accountsPopup.closed) {
+            accountsPopup.close();
+          }
+          
           const errorDiv = document.getElementById('loginError');
           if (errorDiv) {
             errorDiv.textContent = 'Error de autenticación: ' + (error.reason || 'Error desconocido');
